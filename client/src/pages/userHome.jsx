@@ -32,7 +32,6 @@ const data=[
 ]
 
 const UserHome = () => {
-  const navigate = useNavigate()
   return (
     <>
     <Navbar />
@@ -52,10 +51,8 @@ const UserHome = () => {
 
       <div className='grid md:grid-cols-4 mx-10 mt-20 px-10 justify-items-center mb-20'>
       {data.map((item, index) => (
-        <div key={index} className='w-[20rem] min-h-[18rem] border-2 border-black mb-5 rounded-xl hover:cursor-pointer' onClick={() => navigate(`/view/${item.title}`)} >
-          <img src={item.img} alt={item.title} className='rounded-t-xl shadow-lg'/>
-          <h1 className='flex flex-row font-semibold text-2xl p-2'>{item.title}</h1>
-          <p className='px-3'>{item.text}</p>
+        <div key={index}>
+          <Card1 img={item.img} text={item.text} title={item.title} />
         </div>
       ))}
       </div>
