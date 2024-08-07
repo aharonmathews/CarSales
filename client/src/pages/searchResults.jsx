@@ -57,7 +57,7 @@ const CarSales = () => {
         <Navbar />
         <div className="flex p-5">
     
-      <div className="w-1/5 pr-5 flex flex-col m-10 border-2 border-[#bcbcbc] p-2">
+      <div className="w-1/5 pr-5 flex flex-col m-10 border-2 border-[#bcbcbc]  p-4">
         <div>
           {filters.map((filter, index) => (
             <span
@@ -74,17 +74,17 @@ const CarSales = () => {
             </span>
           ))}
         </div>
-        <div className="flex items-center mb-4">
+        <div className="flex mb-4">
           <input
             type="text"
             value={newFilter}
             onChange={(e) => setNewFilter(e.target.value)}
-            placeholder="Type filter and click add"
+            placeholder="Type filters"
             className="w-full p-2 border border-gray-300 rounded"
           />
           <button
             onClick={handleAddFilter}
-            className="ml-2 p-2 bg-blue-500 text-white rounded"
+            className="ml-2 p-2 bg-black text-white rounded"
           >
             Add Filter
           </button>
@@ -174,7 +174,7 @@ const CarSales = () => {
         </div>
       </div>
       <div className="w-4/5 pl-5">
-      <div className='flex flex-row'>
+      <div className='flex flex-row justify-between'>
         <div className="flex justify-between mb-4 w-3/6 h-fit p-2 border border-gray-300 rounded">
           <input
             type="text"
@@ -199,7 +199,7 @@ const CarSales = () => {
               className="w-1/3 border border-gray-300 rounded p-2 text-center"
             >
               <img src={car.image} alt={car.name} className="w-full h-32 object-cover rounded-sm" />
-              <p>{car.name}</p>
+              <p className='text-xl font-semibold'>{car.name}</p>
               <p>₹{car.price}</p>
             </div>
           ))}
