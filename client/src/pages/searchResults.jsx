@@ -16,14 +16,15 @@ const carData = [
 ];
 
 const CarSales = () => {
-  const [filters, setFilters] = useState(['Maruthi', 'Power steering', 'rear cam']);
+  const [filters, setFilters] = useState(['Maruthi', 'Power steering', 'Rear cam']);
   const [budget, setBudget] = useState([10000, 2000000]);
   const [newFilter, setNewFilter] = useState('');
   const [mainFilters, setMainFilters] = useState(['New', 'Price Ascending', 'Price Descending', 'Rating']);
   const [search, setSearch] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState('New');
   const [checkboxes, setCheckboxes] = useState({
     basicDetails: {
-      insurance: true,
+      'insurance': true,
       'no accident': true,
     },
     owners: {
@@ -57,12 +58,18 @@ const CarSales = () => {
     setBudget(value);
   };
 
-  const handleAddFilter = () => {
+
+  const handleAddFilter = (e) => {
+    e.preventDefault();
     if (newFilter.trim()) {
       setFilters([...filters, newFilter.trim()]);
       setNewFilter('');
     }
   };
+
+  const handleFilterClick = (filter) => {
+    setSelectedFilter(filter);
+  }
 
   const handleRemoveFilter = filter => {
     setFilters(filters.filter(f => f !== filter));
@@ -90,24 +97,16 @@ const CarSales = () => {
         <div className="w-1/5 pr-5 flex flex-col m-1 border-2 border-[#bcbcbc] rounded-md p-4">
           <div>
             {filters.map((filter, index) => (
-              <div key={index} className='inline-block m-2'>
-                <span
-                  className="bg-gray-200 px-2 py-1 m-1 rounded"
-                >
+              
+              <div key={index} className=' m-2 bg-gray-200 rounded px-1 flex-row flex w-fit'>
+                <span className="">
                   {filter}
                 </span>
-                <div onClick={() => handleRemoveFilter(filter)}>&times;</div>
-
-                <span
-                  onClick={() => handleRemoveFilter(filter)}
-                  className="absolute top-0 right-0 cursor-pointer text-gray-500"
-                >
-                  &times;
-                </span>
+              <div onClick={() => handleRemoveFilter(filter)} className='text-md  hover:cursor-pointer text-start ml-2'>&times;</div>
               </div>
             ))}
           </div>
-          <div className="flex mb-4">
+          <form  onSubmit={handleAddFilter} className='flex my-4'>
             <input
               type="text"
               value={newFilter}
@@ -117,15 +116,16 @@ const CarSales = () => {
             />
             <button
               onClick={handleAddFilter}
-              className="ml-2 p-2 bg-black text-white rounded"
+              className="ml-2 bg-black text-white rounded"
             >
               Add Filter
             </button>
-          </div>
+          </form>
+          
           <div className="mb-4">
-            <p>Basic Details</p>
+            <p className='mb-1'>Basic Details</p>
             {Object.keys(checkboxes.basicDetails).map(key => (
-              <label className="block mb-2" key={key}>
+              <label className="block mb-1" key={key}>
                 <input
                   type="checkbox"
                   checked={checkboxes.basicDetails[key]}
@@ -139,19 +139,22 @@ const CarSales = () => {
           <div className="mb-4">
             <p>Budget ₹{budget[0]} - ₹{budget[1]}</p>
             <Slider
+              trackStyle={{ backgroundColor: '#000' }}
               range
               min={10000}
               max={2000000}
-              className="accent-black border-black"
               value={budget}
               onChange={handleSliderChange}
               defaultValue={[10000, 2000000]}
+              handleStyle={{
+                borderColor: '#000',
+              }}
             />
           </div>
           <div className="mb-4">
-            <p>Owners</p>
+            <p className='mb-1'>Owners</p>
             {Object.keys(checkboxes.owners).map(key => (
-              <label className="block mb-2" key={key}>
+              <label className="block mb-1" key={key}>
                 <input
                   type="checkbox"
                   checked={checkboxes.owners[key]}
@@ -163,9 +166,9 @@ const CarSales = () => {
             ))}
           </div>
           <div className="mb-4">
-            <p>Fuel</p>
+            <p className='mb-1'>Fuel</p>
             {Object.keys(checkboxes.fuel).map(key => (
-              <label className="block mb-2" key={key}>
+              <label className="block mb-1" key={key}>
                 <input
                   type="checkbox"
                   checked={checkboxes.fuel[key]}
@@ -189,12 +192,17 @@ const CarSales = () => {
             </form>
             
             <div className="flex justify-start space-x-4 mb-4">
-              <button className="bg-black text-white p-2 h-fit rounded">New</button>
-              <button className="bg-gray-200 p-2 h-fit rounded">Price ascending</button>
-              <button className="bg-gray-200 p-2 h-fit rounded">Price descending</button>
-              <button className="bg-gray-200 p-2 h-fit rounded">Rating</button>
+              {mainFilters.map((filter, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleFilterClick(filter)}
+                  className={`p-2 h-fit rounded ${selectedFilter === filter ? 'bg-black text-white' : 'bg-gray-200 text-black'}`}
+                >
+                  {filter}
+                </button>
+              ))}
             </div>
-          </div>
+            </div>
           <div className="flex flex-wrap gap-4">
             {filteredCars.map((car, index) => (
               <div key={index}>
