@@ -1,7 +1,7 @@
 import Navbar from '../components/Navbar';
 import pic1 from '../assets/carInterior.jpg';
 import plchldr from "../assets/CarPlaceholdr.jpg";
-import Card1 from "../components/Card1";
+import Card1 from "./Card1";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
