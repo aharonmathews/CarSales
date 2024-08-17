@@ -1,7 +1,9 @@
 import Navbar from '../components/Navbar';
 import pic1 from '../assets/carInterior.jpg';
 import plchldr from "../assets/CarPlaceholdr.jpg";
-import Card1 from "./Card1";
+import pic2 from "../assets/carSMbg.jpeg";
+import Card1 from "../components/Card1";
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -43,7 +45,8 @@ const UserHome = () => {
 
   return (
     <>
-    <Navbar />
+    <div className='hidden md:block'>
+      <Navbar />
       <div className="relative m-10">
         <div
           className='bg-cover bg-center lg:w-[90rem] lg:h-[25rem] sm:w-[45rem] sm:h-[20rem] absolute -z-1 rounded-3xl'
@@ -66,6 +69,26 @@ const UserHome = () => {
           </form>        
         </div>
       </div>
+    </div>
+
+    <div className='block md:hidden'>
+        <img src={pic2} className='absolute h-[16rem] w-full pt-10' />
+        <div className='relative z-10 p-12 lg:p-16'>
+          <p className='text-slate-200 font-semibold text-8xl'>Car?</p>
+          <form onSubmit={handleSearch} className='flex flex-row items-center'>
+            <input 
+              type="text" 
+              id="search" 
+              className='w-[30rem] p-3 flex border-2 my-4 lg:my-8 ml-5 px-3 py-1 rounded-lg text-xl' placeholder='Find your car!' 
+              onChange={(e)=> setSearch(e.target.value)}/>
+            {/* <button 
+              className='bg-white hover:bg-zinc-300 h-10 w-10 p-1 mx-4 rounded-2xl text-lg text-semibold'
+              type='submit'
+            /> */}
+          </form>        
+        </div>
+    </div>
+    
 
       <div className='text-4xl font-semibold md:mt-24 mx-16'>
         Trending Searches

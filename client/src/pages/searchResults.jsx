@@ -4,7 +4,7 @@ import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import Navbar from '../components/Navbar';
 import sampleImage from '../assets/CarPlaceholdr.jpg';
-import Card1 from './Card1';
+import Card1 from '../components/Card1';
 
 const carData = [
   { id: 1, image: sampleImage, name: 'CAR1', price: 2000 },

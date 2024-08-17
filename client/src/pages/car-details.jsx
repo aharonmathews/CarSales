@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 const CarDetails = () => {
   const location = useLocation();
@@ -78,6 +79,8 @@ const CarDetails = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="max-w-5xl w-full bg-white rounded-lg shadow-md p-6">
         {/* Header and Image Section */}
@@ -208,6 +211,8 @@ const CarDetails = () => {
         </div>
       </div>
     </div>
+    </>
+    
   );
 };
 
