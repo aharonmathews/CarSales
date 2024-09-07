@@ -53,28 +53,28 @@ const UserHome = () => {
           style={{ backgroundImage: `url(${pic1})` }}
         />
         <div className='relative z-10 p-12 lg:p-16'>
-          <p className='text-slate-200 font-semibold text-8xl'>Car?</p>
+          <p className='text-slate-200 font-semibold text-8xl text-border'>Car?</p>
           <form onSubmit={handleSearch} className='flex flex-row items-center'>
             <input 
               type="text" 
               id="search" 
               className='w-[30rem] p-3 flex border-2 my-4 lg:my-8 ml-5 px-3 py-1 rounded-lg text-xl' placeholder='Find your car!' 
               onChange={(e)=> setSearch(e.target.value)}/>
-            <button 
+            {/* <button 
               className='bg-white hover:bg-zinc-300 h-10 w-10 p-1 mx-4 rounded-2xl text-lg text-semibold'
               type='submit'
             >
               <img src={'https://img.icons8.com/?size=100&id=11686&format=png&color=000000'} className='w-fit'/>
-            </button>
+            </button> */}
           </form>        
         </div>
       </div>
     </div>
 
-    <div className='block md:hidden'>
-        <img src={pic2} className='absolute h-[16rem] w-full pt-10' />
+    <div className='block md:hidden'>{/* Mobile view */}
+        <img src={pic2} className='absolute h-[16rem] w-full' />
         <div className='relative z-10 p-12 lg:p-16'>
-          <p className='text-slate-200 font-semibold text-8xl'>Car?</p>
+          <p className='text-slate-200 font-semibold text-8xl text-border '>Car?</p>
           <form onSubmit={handleSearch} className='flex flex-row items-center'>
             <input 
               type="text" 
