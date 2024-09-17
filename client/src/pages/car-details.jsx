@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import React, { useState, useRef, useEffect } from "react";
 
 const CarDetails = () => {
   const location = useLocation();
@@ -11,6 +11,7 @@ const CarDetails = () => {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const [showTooltip, setShowTooltip] = useState(false); // Tooltip visibility state
+  const [dealershipTitle, setDealershipTitle] = useState("Luxury Motors"); // Set a default dealership title or fetch it
 
   // Ref for the review section
   const reviewSectionRef = useRef(null);
@@ -33,10 +34,12 @@ const CarDetails = () => {
       text: "₹12,000",
     },
   ];
+
   useEffect(() => {
-    // Log product view when the component loads
-    logProductView(dealershiptitle); // Assuming title or another identifier acts as the productId
-  }, [dealershiptitle]);
+    if (dealershipTitle) {
+      logProductView(dealershipTitle);
+    }
+  }, [dealershipTitle]);
 
   const handleHeartClick = (index) => {
     setRating(index + 1);
@@ -50,6 +53,10 @@ const CarDetails = () => {
     alert(`Review submitted: ${review}`);
   };
 
+  const logProductView = (dealership) => {
+    console.log(`Product viewed: ${dealership}`);
+  };
+
   const handleScrollToReview = () => {
     if (reviewSectionRef.current) {
       reviewSectionRef.current.scrollIntoView({ behavior: "smooth" });
@@ -61,11 +68,11 @@ const CarDetails = () => {
   };
 
   const handleMakeOfferClick = () => {
-    navigate('/make-an-offer', { state: { img, title, text } });
+    navigate("/make-an-offer", { state: { img, title, text } });
   };
 
   const handleCompareClick = () => {
-    navigate('/compare-cars', { state: { img, title, text } });
+    navigate("/compare-cars", { state: { img, title, text } });
   };
 
   const renderTabContent = () => {
@@ -113,7 +120,7 @@ const CarDetails = () => {
 
               {/* Dealership Info with Verified Tick and Tooltip */}
               <div className="flex items-center my-4 text-sm text-gray-500">
-                <span className="font-medium">{dealershiptitle || Dealership1}</span>
+                <span className="font-medium">{dealershipTitle}</span>
 
                 <svg
                   className="w-5 h-5 text-green-500 ml-2"
@@ -221,34 +228,32 @@ const CarDetails = () => {
               ))}
             </div>
             <textarea
-              ref={reviewSectionRef}
               value={review}
               onChange={handleReviewChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              rows="4"
-              placeholder="Write your review here..."
-            ></textarea>
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Write your review..."
+            />
             <button
+              className="bg-black text-white px-4 py-2 rounded-md mt-4"
               onClick={handleSubmitReview}
-              className="mt-2 bg-black text-white px-4 py-2 rounded-md"
             >
               Submit Review
             </button>
           </div>
 
-          {/* Suggested Cars */}
+          {/* Suggested Cars Section */}
           <div className="mt-10">
             <h3 className="text-2xl font-bold mb-4">You might be interested in</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex space-x-4">
               {suggestedCars.map((car, index) => (
                 <div
                   key={index}
-                  className="bg-gray-100 p-4 rounded-lg shadow-md cursor-pointer"
+                  className="p-4 border border-gray-200 rounded-lg cursor-pointer"
                   onClick={() => handleSuggestedCarClick(car)}
                 >
-                  <img src={car.img} alt={car.title} className="w-full h-auto rounded-lg mb-4" />
-                  <h4 className="text-lg font-semibold">{car.title}</h4>
-                  <p className="text-gray-600">{car.text}</p>
+                  <img src={car.img} alt={car.title} className="w-full h-auto mb-2" />
+                  <h4 className="text-lg font-bold">{car.title}</h4>
+                  <p className="text-gray-500">{car.text}</p>
                 </div>
               ))}
             </div>
