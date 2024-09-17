@@ -6,6 +6,10 @@ import WishList from "./pages/wishList";
 import CarDetails from "./pages/car-details"; 
 import CompareCars from './pages/CompareCars';
 import MakeAnOffer from './pages/MakeAnOffer';
+import DealershipDashboard from './pages/dealership/DealershipDashboard';
+import GarageManagement from './pages/dealership/GarageManagement';
+import AddNewVehicle from './pages/dealership/AddNewVehicle';
+
 function App() {
   return (
     <Router>
@@ -17,6 +21,9 @@ function App() {
         <Route path="/car-details/" element={<CarDetails />} /> 
         <Route path="/compare-cars" element={<CompareCars />} />
         <Route path="/make-an-offer" element={<MakeAnOffer />} />
+        <Route path="/DealershipDashboard" element={<DealershipDashboard/>} />
+        <Route path="/GarageManagement/*" element={<GarageManagement/>} />  {/* Add the wildcard here */}
+        <Route path="/AddNewVehicle" element={<AddNewVehicle/>} />   
       </Routes>
     </Router>
   );

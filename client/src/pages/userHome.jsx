@@ -17,17 +17,17 @@ const data=[
   },
   {
     img:plchldr,
-    title:"Car 1",
+    title:"Car 2",
     text:"Cost",
   },
   {
     img:plchldr,
-    title:"Car 1",
+    title:"Car 3",
     text:"Cost",
   },
   {
     img:plchldr,
-    title:"Car 1",
+    title:"Car 4",
     text:"Cost",
   },
 
