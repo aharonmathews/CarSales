@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 
 const Wishlist = () => {
-  // State to manage the wishlist items
-  const [wishlistItems, setWishlistItems] = useState([
+  // Sample wishlist data
+  const wishlistItems = [
     {
       id: 1,
       name: "Suzuki SX4",
@@ -13,7 +13,7 @@ const Wishlist = () => {
       location: "Hawaii",
       engine: "1.6L",
       transmission: "AMT",
-      imageUrl: "link-to-suzuki-image", // Replace with actual image links
+      image: "CardPlaceHoldr.jpg", // Replace with actual image links
       isVip: true,
     },
     {
@@ -26,7 +26,7 @@ const Wishlist = () => {
       location: "Indiana",
       engine: "2.7L",
       transmission: "Automatic",
-      imageUrl: "link-to-toyota-land-cruiser-image",
+      image: "CardPlaceHoldr.jpg",
       isVip: false,
     },
     {
@@ -39,7 +39,7 @@ const Wishlist = () => {
       location: "Illinois",
       engine: "1.8L",
       transmission: "AMT",
-      imageUrl: "link-to-toyota-celica-image",
+      image: "CardPlaceHoldr.jpg",
       isVip: false,
     },
     {
@@ -52,41 +52,36 @@ const Wishlist = () => {
       location: "Connecticut",
       engine: "2.0L",
       transmission: "Automatic",
-      imageUrl: "link-to-kia-cerato-image",
+      image: "CardPlaceHoldr.jpg",
       isVip: false,
     },
-  ]);
-
-  // Function to remove an item from the wishlist
-  const removeFromWishlist = (id) => {
-    // Filter out the item with the specified ID
-    const updatedWishlist = wishlistItems.filter((item) => item.id !== id);
-    setWishlistItems(updatedWishlist);
-  };
+  ];
 
   return (
-    <div className="wishlist-container">
-      <h2>Wishlist</h2>
-      <p>You have {wishlistItems.length} saved items</p>
-      <div className="wishlist-grid">
+    <div className="p-6">
+      <h1 className="text-2xl font-bold">Wishlist</h1>
+      <p className="mb-4">You have {wishlistItems.length} saved items</p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {wishlistItems.map((item) => (
-          <div className="wishlist-item" key={item.id}>
-            {item.isVip && <span className="vip-badge">VIP</span>}
-            <img src={item.imageUrl} alt={item.name} className="car-image" />
-            <h3>{item.name}</h3>
-            <p>{item.year}</p>
-            <p>{item.distance}</p>
-            <p>{item.fuel}</p>
-            <p>{item.location}</p>
-            <p>{item.engine}</p>
-            <p>{item.transmission}</p>
-            <p className="price">{item.price}</p>
-            <button
-              onClick={() => removeFromWishlist(item.id)}
-              className="remove-btn"
-            >
-              Remove from wishlist
-            </button>
+          <div key={item.id} className="border p-4 rounded-lg shadow-lg">
+            <img
+              src={item.imageUrl}
+              alt={item.name}
+              className="w-full h-48 object-cover mb-4 rounded-lg"
+            />
+            <h2 className="text-xl font-semibold">{item.name}</h2>
+            {item.isVip && <span className="text-yellow-500 font-bold">VIP</span>}
+            <ul className="mt-2">
+              <li>Year: {item.year}</li>
+              <li>Distance: {item.distance}</li>
+              <li>Fuel: {item.fuel}</li>
+              <li>Location: {item.location}</li>
+              <li>Engine: {item.engine}</li>
+              <li>Transmission: {item.transmission}</li>
+            </ul>
+            <p className="text-green-500 text-lg mt-2 font-bold">{item.price}</p>
+            <button className="text-red-500 mt-2 underline">Remove from wishlist</button>
           </div>
         ))}
       </div>
