@@ -1,8 +1,8 @@
-import React from "react";
-
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { WishlistContext } from "./WishlistContext"; 
 const Wishlist = () => {
-  // Sample wishlist data
-  const wishlistItems = [
+  const [wishlistItems, setWishlistItems] = useState([
     {
       id: 1,
       name: "Suzuki SX4",
@@ -13,7 +13,7 @@ const Wishlist = () => {
       location: "Hawaii",
       engine: "1.6L",
       transmission: "AMT",
-      imageUrl: "CardPlaceHoldr.jpg", // Replace with actual image links
+      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTftZEvXN7zC1HOE3LclQCAx28T1vB83bHaNg&s", // Replace with actual image links
       isVip: true,
     },
     {
@@ -26,7 +26,7 @@ const Wishlist = () => {
       location: "Indiana",
       engine: "2.7L",
       transmission: "Automatic",
-      imageUrl: "CardPlaceHoldr.jpg",
+      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTftZEvXN7zC1HOE3LclQCAx28T1vB83bHaNg&s",
       isVip: false,
     },
     {
@@ -39,7 +39,7 @@ const Wishlist = () => {
       location: "Illinois",
       engine: "1.8L",
       transmission: "AMT",
-      imageUrl: "CardPlaceHoldr.jpg",
+      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTftZEvXN7zC1HOE3LclQCAx28T1vB83bHaNg&s",
       isVip: false,
     },
     {
@@ -52,10 +52,22 @@ const Wishlist = () => {
       location: "Connecticut",
       engine: "2.0L",
       transmission: "Automatic",
-      imageUrl: "CardPlaceHodlr.jpg",
+      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTftZEvXN7zC1HOE3LclQCAx28T1vB83bHaNg&s",
       isVip: false,
     },
-  ];
+  ]);
+
+  const navigate = useNavigate();
+
+  const removeFromWishlist = (id) => {
+    const updatedWishlist = wishlistItems.filter(item => item.id !== id);
+    setWishlistItems(updatedWishlist);
+
+    // If the wishlist is empty, redirect to another page (e.g., homepage)
+    if (updatedWishlist.length === 0) {
+      navigate("/"); // Redirect to homepage or any other route
+    }
+  };
 
   return (
     <div className="p-6">
@@ -81,7 +93,12 @@ const Wishlist = () => {
               <li>Transmission: {item.transmission}</li>
             </ul>
             <p className="text-green-500 text-lg mt-2 font-bold">{item.price}</p>
-            <button className="text-red-500 mt-2 underline">Remove from wishlist</button>
+            <button
+              className="text-red-500 mt-2 underline"
+              onClick={() => removeFromWishlist(item.id)}
+            >
+              Remove from wishlist
+            </button>
           </div>
         ))}
       </div>
