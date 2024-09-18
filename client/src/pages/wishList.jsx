@@ -13,7 +13,7 @@ const Wishlist = () => {
       location: "Hawaii",
       engine: "1.6L",
       transmission: "AMT",
-      imageUrl: "CardPlaceHoldr", // Replace with actual image links
+      imageUrl: "CardPlaceHoldr.jpg", // Replace with actual image links
       isVip: true,
     },
     {
@@ -26,7 +26,7 @@ const Wishlist = () => {
       location: "Indiana",
       engine: "2.7L",
       transmission: "Automatic",
-      imageUrl: "CardPlaceHoldr",
+      imageUrl: "CardPlaceHoldr.jpg",
       isVip: false,
     },
     {
@@ -39,7 +39,7 @@ const Wishlist = () => {
       location: "Illinois",
       engine: "1.8L",
       transmission: "AMT",
-      imageUrl: "CardPlaceHoldr",
+      imageUrl: "CardPlaceHoldr.jpg",
       isVip: false,
     },
     {
@@ -52,7 +52,7 @@ const Wishlist = () => {
       location: "Connecticut",
       engine: "2.0L",
       transmission: "Automatic",
-      imageUrl: "CardPlaceHodlr",
+      imageUrl: "CardPlaceHodlr.jpg",
       isVip: false,
     },
   ];
