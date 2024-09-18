@@ -13,7 +13,7 @@ const Wishlist = () => {
       location: "Hawaii",
       engine: "1.6L",
       transmission: "AMT",
-      image: "CardPlaceHoldr.jpg", // Replace with actual image links
+      imageUrl: "link-to-suzuki-image", // Replace with actual image links
       isVip: true,
     },
     {
@@ -26,7 +26,7 @@ const Wishlist = () => {
       location: "Indiana",
       engine: "2.7L",
       transmission: "Automatic",
-      image: "CardPlaceHoldr.jpg",
+      imageUrl: "link-to-toyota-land-cruiser-image",
       isVip: false,
     },
     {
@@ -39,7 +39,7 @@ const Wishlist = () => {
       location: "Illinois",
       engine: "1.8L",
       transmission: "AMT",
-      image: "CardPlaceHoldr.jpg",
+      imageUrl: "link-to-toyota-celica-image",
       isVip: false,
     },
     {
@@ -52,7 +52,7 @@ const Wishlist = () => {
       location: "Connecticut",
       engine: "2.0L",
       transmission: "Automatic",
-      image: "CardPlaceHoldr.jpg",
+      imageUrl: "link-to-kia-cerato-image",
       isVip: false,
     },
   ];
