@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { WishlistContext } from "./WishlistContext"; 
 const Wishlist = () => {
   const [wishlistItems, setWishlistItems] = useState([
     {
