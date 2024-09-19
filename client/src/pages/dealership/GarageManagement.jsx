@@ -3,6 +3,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import AddNewVehicle from './AddNewVehicle';
 import VehicleDetails from './VehicleDetails';
 import { fetchVehiclesFromFirestore, addVehicleToFirestore } from '../../firestoreService'; // Firestore functions
+import Navbar from './Navbar';
 
 function GarageManagement() {
   const [vehicles, setVehicles] = useState([]);
@@ -49,17 +50,7 @@ function GarageManagement() {
 
   return (
     <>
-      <nav style={styles.nav}>
-        <h1 style={styles.logo}>Website Name</h1>
-        <div style={styles.navIcons}>
-          <Link to="/">
-            <i className="fas fa-home"></i>
-          </Link>
-          <Link to="/add-vehicle">
-            <i className="fas fa-car"></i> Add New Vehicle
-          </Link>
-        </div>
-      </nav>
+      <Navbar />
       <div style={styles.container}>
         <h2 style={styles.title}>Inventory</h2>
         <Routes>

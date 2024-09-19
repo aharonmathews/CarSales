@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import Navbar from "./Navbar";
 
 const DealershipDashboard = () => {
   const [selectedTime, setSelectedTime] = useState("All time");
@@ -34,6 +35,8 @@ const DealershipDashboard = () => {
   ];
 
   return (
+    <>
+    <Navbar />
     <div style={styles.dashboardContainer}>
       {/* Welcome Message */}
       <h1 style={styles.heading}>Welcome, {"Dealership"}</h1>
@@ -89,6 +92,8 @@ const DealershipDashboard = () => {
         ))}
       </div>
     </div>
+    </>
+    
   );
 };
 
