@@ -87,6 +87,12 @@ const UserHome = () => {
         </div>
       </div>
 
+       <div>
+      {/* Other Car Details */}
+      <Link to="/feedback" className="text-blue-500 hover:underline">
+        Leave a Review
+      </Link>
+    </div>
       <div className='text-4xl font-semibold md:mt-24 mx-16'>
         Trending Searches
       </div>
@@ -97,12 +103,6 @@ const UserHome = () => {
           </div>
         ))}
       </div>
-       <div>
-      {/* Other Car Details */}
-      <Link to="/feedback" className="text-blue-500 hover:underline">
-        Leave a Review
-      </Link>
-    </div>
     </>
   );
 };
