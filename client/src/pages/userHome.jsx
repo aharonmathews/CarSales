@@ -97,6 +97,12 @@ const UserHome = () => {
           </div>
         ))}
       </div>
+       <div>
+      {/* Other Car Details */}
+      <Link to="/feedback" className="text-blue-500 hover:underline">
+        Leave a Review
+      </Link>
+    </div>
     </>
   );
 };
