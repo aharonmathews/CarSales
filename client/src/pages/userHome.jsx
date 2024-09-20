@@ -33,6 +33,7 @@ const data = [
 const UserHome = () => {
   const [search, setSearch] = useState("");
   const [user, setUser] = useState(null);
+  const [wishlist, setWishlist] = useState([]); // State for wishlist
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,6 +46,11 @@ const UserHome = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     navigate(`/search?query=${search}`);
+  };
+
+  // Function to add a car to wishlist
+  const addToWishlist = (car) => {
+    setWishlist([...wishlist, car]);
   };
 
   return (
@@ -90,6 +96,12 @@ const UserHome = () => {
         {data.map((item, index) => (
           <div key={index}>
             <Card1 img={item.img} text={item.text} title={item.title} />
+            <button
+              className="bg-green-500 text-white mt-2 px-4 py-2 rounded"
+              onClick={() => addToWishlist(item)}
+            >
+              Add to Wishlist
+            </button>
           </div>
         ))}
       </div>
