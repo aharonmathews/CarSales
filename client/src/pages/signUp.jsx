@@ -13,6 +13,7 @@ import {
   setPersistence,
   browserSessionPersistence
 } from "firebase/auth";
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
@@ -32,7 +33,7 @@ const SignIn = () => {
     getRedirectResult(auth)
       .then((result) => {
         if (result && result.user) {
-          navigate('/dealershipDashboard'); // Redirect on successful login via Google/Facebook
+          handlePostLogin(result.user);
         }
       })
       .catch((error) => {
@@ -42,12 +43,31 @@ const SignIn = () => {
     // Check if the user is already signed in
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigate('/dealershipDashboard'); // Redirect if already logged in
+        handlePostLogin(user);
       }
     });
 
     return () => unsubscribe(); // Clean up listener on unmount
   }, [navigate]);
+
+  const handlePostLogin = async (user) => {
+    const db = getFirestore();
+    const userDoc = doc(db, 'userInfo', user.email);
+    const userSnapshot = await getDoc(userDoc);
+
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.data();
+      if (userData.isDealership === 'no') {
+        navigate('/'); // Redirect to home page if not a dealership
+      } else if (userData.isDealership === 'yes' && userData.isProfileCompleted === 'no') {
+        navigate('/profile'); // Redirect to profile page if dealership and profile not completed
+      } else {
+        navigate('/dealershipDashboard'); // Redirect to dashboard if dealership and profile completed
+      }
+    } else {
+      console.error("User data not found");
+    }
+  };
 
   const handleGoogleLogin = async () => {
     const auth = getAuth();
@@ -76,10 +96,20 @@ const SignIn = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     const auth = getAuth();
+    const db = getFirestore();
     try {
       setLoading(true);
-      await createUserWithEmailAndPassword(auth, email, password);
-      navigate('/dealershipDashboard'); // Redirect on successful sign-up
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Create a document in the userInfo collection with the user email as the document ID
+      await setDoc(doc(db, 'userInfo', user.email), {
+        userID: user.email,
+        isDealership: 'no',
+        isProfileCompleted: 'no',
+      });
+
+      navigate('/'); // Redirect on successful sign-up
     } catch (error) {
       setLoading(false);
       console.error("Sign-up error:", error);
@@ -91,8 +121,9 @@ const SignIn = () => {
     const auth = getAuth();
     try {
       setLoading(true);
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate('/dealershipDashboard'); // Redirect on successful login
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      handlePostLogin(user);
     } catch (error) {
       setLoading(false);
       console.error("Login error:", error);
@@ -108,7 +139,6 @@ const SignIn = () => {
       console.error("Sign-out error:", error);
     }
   };
-
   return (
     <div className='grid md:grid-cols-2 h-screen md:overflow-clip'>
       <div className='flex flex-row justify-center'>
@@ -189,7 +219,7 @@ const SignIn = () => {
                 </div>
                 <div className='mt-3'>
                   Already have an account?  
-                  <a className='text-blue-500 mx-1 hover:border-b-2 hover:text-blue-700 hover:cursor-pointer' onClick={() => setReg("logIn")}>
+                  <a className='text-blue-500 mx-1hover:border-b-2 hover:text-blue-700 hover:cursor-pointer' onClick={() => setReg("logIn")}>
                     Login!
                   </a>
                 </div>
