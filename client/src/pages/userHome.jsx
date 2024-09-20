@@ -87,12 +87,6 @@ const UserHome = () => {
         </div>
       </div>
 
-       <div>
-      {/* Other Car Details */}
-      <Link to="/feedback" className="text-blue-500 hover:underline">
-        Leave a Review
-      </Link>
-    </div>
       <div className='text-4xl font-semibold md:mt-24 mx-16'>
         Trending Searches
       </div>
@@ -102,7 +96,17 @@ const UserHome = () => {
             <Card1 img={item.img} text={item.text} title={item.title} />
           </div>
         ))}
-      </div>
+      </div><div className="mt-10">
+  {/* Other Car Details */}
+  <footer className="flex justify-center py-4">
+    <button
+      onClick={() => navigate("/feedback")}
+      className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      Leave a Review
+    </button>
+  </footer>
+</div>
     </>
   );
 };
