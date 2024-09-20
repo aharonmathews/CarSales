@@ -105,15 +105,15 @@ const UserHome = () => {
           </div>
         ))}
       </div>
+<footer className="flex justify-center py-4 mt-auto bg-gray-100">
+  <button
+    onClick={() => navigate("/feedback")}
+    className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+  >
+    Leave a Review
+  </button>
+</footer>
 
-      <footer className="flex justify-center py-4 mt-auto">
-        <button
-          onClick={() => navigate("/feedback")}
-          className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Leave a Review
-        </button>
-      </footer>
     </div>
   );
 };
