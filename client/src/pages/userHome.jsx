@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import pic1 from '../assets/carInterior.jpg';
@@ -38,11 +38,7 @@ const UserHome = () => {
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
+      setUser(user ? user : null);
     });
   }, []);
 
@@ -52,7 +48,7 @@ const UserHome = () => {
   };
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <div className='hidden md:block'>
         <Navbar />
         <div className="relative m-10">
@@ -73,10 +69,10 @@ const UserHome = () => {
         </div>
       </div>
 
-      <div className='block md:hidden'>{/* Mobile view */}
+      <div className='block md:hidden'>
         <img src={pic2} className='absolute h-[16rem] w-full' />
         <div className='relative z-10 p-12 lg:p-16'>
-          <p className='text-slate-200 font-semibold text-8xl text-border '>Car?</p>
+          <p className='text-slate-200 font-semibold text-8xl text-border'>Car?</p>
           <form onSubmit={handleSearch} className='flex flex-row items-center'>
             <input
               type="text"
@@ -96,21 +92,17 @@ const UserHome = () => {
             <Card1 img={item.img} text={item.text} title={item.title} />
           </div>
         ))}
-      </div><div className="flex flex-col min-h-screen">
-      {/* Your existing content */}
-      
-      <div className="mt-auto">
-        <footer className="flex justify-center py-4">
-          <button
-            onClick={() => navigate("/feedback")}
-            className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Leave a Review
-          </button>
-        </footer>
       </div>
+
+      <footer className="flex justify-center py-4 mt-auto">
+        <button
+          onClick={() => navigate("/feedback")}
+          className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          Leave a Review
+        </button>
+      </footer>
     </div>
-    </>
   );
 };
 
