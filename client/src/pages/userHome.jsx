@@ -96,17 +96,20 @@ const UserHome = () => {
             <Card1 img={item.img} text={item.text} title={item.title} />
           </div>
         ))}
-      </div><div className="mt-10">
-  {/* Other Car Details */}
-  <footer className="flex justify-center py-4">
-    <button
-      onClick={() => navigate("/feedback")}
-      className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    >
-      Leave a Review
-    </button>
-  </footer>
-</div>
+      </div><div className="flex flex-col min-h-screen">
+      {/* Your existing content */}
+      
+      <div className="mt-auto">
+        <footer className="flex justify-center py-4">
+          <button
+            onClick={() => navigate("/feedback")}
+            className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Leave a Review
+          </button>
+        </footer>
+      </div>
+    </div>
     </>
   );
 };
