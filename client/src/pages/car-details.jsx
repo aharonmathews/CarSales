@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import React, { useState, useRef, useEffect } from "react";
 
@@ -204,32 +204,42 @@ const CarDetails = () => {
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
-                  <path d="M9.049 2.927C9.432 2.036 10.568 2.036 10.95 2.927l1.286 2.707a1 1 0 00.756.545l2.992.435c.969.141 1.356 1.332.654 2.012l-2.165 2.11a1 1 0 00-.287.885l.511 2.975c.168.98-.86 1.723-1.746 1.263l-2.67-1.403a1 1 0 00-.932 0l-2.67 1.403c-.886.46-1.914-.283-1.746-1.263l.51-2.975a1 1 0 00-.287-.885L2.35 8.626c-.702-.68-.315-1.87.654-2.012l2.992-.435a1 1 0 00.756-.545l1.286-2.707z" />
+                  <path d="M9.049 2.927C9.432 2.036 10.568 2.036 10.95 2.927l1.286 2.707a1 1 0 00.75.545l2.917.421c1.06.153 1.486 1.456.718 2.204l-2.11 2.057a1 1 0 00-.287.885l.498 2.903c.181 1.057-.928 1.867-1.883 1.37l-2.605-1.37a1 1 0 00-.934 0l-2.605 1.37c-.955.497-2.064-.313-1.883-1.37l.498-2.903a1 1 0 00-.287-.885L2.299 8.804c-.768-.748-.342-2.051.718-2.204l2.917-.421a1 1 0 00.75-.545L9.049 2.927z" />
                 </svg>
               ))}
             </div>
             <textarea
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full border border-gray-300 p-2 rounded-md"
               rows="4"
+              placeholder="Write your review..."
               value={review}
               onChange={handleReviewChange}
-              placeholder="Write your review..."
-            />
+            ></textarea>
             <button
-              className="bg-black text-white px-4 py-2 mt-4 rounded-md"
               onClick={handleSubmitReview}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4"
             >
               Submit Review
             </button>
           </div>
-          <div className="mt-6 flex justify-center">
-            <button
-              className="bg-black text-white px-6 py-2 rounded-md"
-              onClick={handleScrollToReview}
-            >
-              Scroll to Review
-            </button>
+          <div className="mt-10" ref={reviewSectionRef}>
+            <h3 className="text-2xl font-bold mb-4">Customer Reviews</h3>
+            <p>No reviews yet. Be the first to leave a review!</p>
           </div>
+
+          {/* Footer Section */}
+          <footer className="mt-16 bg-gray-100 py-4 text-center">
+            <p className="text-gray-600">
+              <Link to="/feedback" className="text-blue-500 underline">
+                Leave Feedback
+              </Link>
+              {" | "}
+              <Link to="/reviews" className="text-blue-500 underline">
+                View Reviews
+              </Link>
+            </p>
+            <p className="text-gray-500 text-sm mt-2">© 2024 Car Listings. All rights reserved.</p>
+          </footer>
         </div>
       </div>
     </>
