@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import React, { useState, useRef, useEffect } from "react";
 
@@ -34,6 +34,7 @@ const CarDetails = () => {
     if (review.trim() === "") {
       alert("Please write a review before submitting!");
     } else {
+      // Navigate to the CarFeedback component with the review and rating
       navigate("/car-feedback", { state: { review, rating, carTitle: title } });
     }
   };
@@ -208,7 +209,7 @@ const CarDetails = () => {
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
-                  <path d="M9.049 2.927C9.432 2.036 10.568 2.036 10.951 2.927l1.228 2.794a1 1 0 00.832.59l3.041.349c1.054.12 1.482 1.412.712 2.06l-2.227 1.928a1 1 0 00-.313.92l.662 3.036c.237 1.086-.91 1.933-1.848 1.34l-2.548-1.537a1 1 0 00-1.042 0l-2.548 1.537c-.938.593-2.085-.254-1.848-1.34l.662-3.036a1 1 0 00-.313-.92L2.236 8.72c-.77-.648-.342-1.94.712-2.06l3.041-.349a1 1 0 00.832-.59l1.228-2.794z" />
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.228 2.794a1 1 0 00.832.59l3.041.349c1.054.12 1.482 1.412.712 2.06l-2.227 1.928a1 1 0 00-.313.92l.662 3.036c.237 1.086-.91 1.933-1.848 1.34l-2.548-1.537a1 1 0 00-1.042 0l-2.548 1.537c-.938.593-2.085-.254-1.848-1.34l.662-3.036a1 1 0 00-.313-.92L2.236 8.72c-.77-.648-.342-1.94.712-2.06l3.041-.349a1 1 0 00.832-.59l1.228-2.794z" />
                 </svg>
               ))}
             </div>
