@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import pic1 from '../assets/carInterior.jpg';
@@ -33,13 +33,16 @@ const data = [
 const UserHome = () => {
   const [search, setSearch] = useState("");
   const [user, setUser] = useState(null);
-  const [wishlist, setWishlist] = useState([]); // State for wishlist
   const navigate = useNavigate();
 
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
-      setUser(user ? user : null);
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
     });
   }, []);
 
@@ -48,13 +51,8 @@ const UserHome = () => {
     navigate(`/search?query=${search}`);
   };
 
-  // Function to add a car to wishlist
-  const addToWishlist = (car) => {
-    setWishlist([...wishlist, car]);
-  };
-
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
       <div className='hidden md:block'>
         <Navbar />
         <div className="relative m-10">
@@ -75,10 +73,10 @@ const UserHome = () => {
         </div>
       </div>
 
-      <div className='block md:hidden'>
+      <div className='block md:hidden'>{/* Mobile view */}
         <img src={pic2} className='absolute h-[16rem] w-full' />
         <div className='relative z-10 p-12 lg:p-16'>
-          <p className='text-slate-200 font-semibold text-8xl text-border'>Car?</p>
+          <p className='text-slate-200 font-semibold text-8xl text-border '>Car?</p>
           <form onSubmit={handleSearch} className='flex flex-row items-center'>
             <input
               type="text"
@@ -96,25 +94,10 @@ const UserHome = () => {
         {data.map((item, index) => (
           <div key={index}>
             <Card1 img={item.img} text={item.text} title={item.title} />
-            <button
-              className="bg-green-500 text-white mt-2 px-4 py-2 rounded"
-              onClick={() => addToWishlist(item)}
-            >
-              Add to Wishlist
-            </button>
           </div>
         ))}
       </div>
-<footer className="flex justify-center py-4 mt-auto bg-gray-100">
-  <button
-    onClick={() => navigate("/feedback")}
-    className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
-  >
-    Leave a Review
-  </button>
-</footer>
-
-    </div>
+    </>
   );
 };
 

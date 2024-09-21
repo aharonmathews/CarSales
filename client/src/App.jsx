@@ -10,7 +10,7 @@ import DealershipDashboard from './pages/dealership/DealershipDashboard';
 import GarageManagement from './pages/dealership/GarageManagement';
 import AddNewVehicle from './pages/dealership/AddNewVehicle';
 import Profile from "./pages/userProfile";
-import CarFeedback from './CarFeedback';
+
 function App() {
   return (
     <Router>
@@ -26,7 +26,6 @@ function App() {
         <Route path="/GarageManagement/*" element={<GarageManagement/>} />  {/* Add the wildcard here */}
         <Route path="/AddNewVehicle" element={<AddNewVehicle/>} />   
         <Route path="/Profile" element={<Profile />} />
-        <Route path="/feedback" element={<CarFeedback />} />
       </Routes>
     </Router>
   );
