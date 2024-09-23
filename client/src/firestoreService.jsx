@@ -47,7 +47,7 @@ export const fetchVehicleByIdFromFirestore = async (id) => {
     if (docSnap.exists()) {
       return { ...docSnap.data(), id: docSnap.id };
     } else {
-      console.log("No such document!");
+      console.log("Noopooooo!");
       return null;
     }
   };
