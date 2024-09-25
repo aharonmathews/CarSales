@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import { useState, useEffect } from 'react';
+import { getAuth, onAuthStateChanged} from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import Navbar from '../components/Navbar';
 import pic1 from '../assets/carInterior.jpg';
 import plchldr from "../assets/CarPlaceholdr.jpg";
@@ -33,23 +34,45 @@ const data = [
 const UserHome = () => {
   const [search, setSearch] = useState("");
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
-    });
-  }, []);
+    const db = getFirestore();
+
+    const checkUser = async () => {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          setUser(user);
+          const userDoc = doc(db, 'userInfo', user.email);
+          const userSnapshot = await getDoc(userDoc);
+          if (userSnapshot.exists()) {
+            const userData = userSnapshot.data();
+            if (userData.isProfileCompleted === 'no') {
+              navigate('/profile');
+            }
+          }
+        }
+        setLoading(false);
+      });
+    };
+
+    checkUser();
+  }, [navigate]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     navigate(`/search?query=${search}`);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="loader">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <>

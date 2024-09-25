@@ -1,6 +1,6 @@
 // src/productViewService.js
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { db } from "../../firebase";
+import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 // Function to log a product view
 export const logProductView = async (productId) => {

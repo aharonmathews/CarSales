@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +9,8 @@ const Profile = () => {
   const [location, setLocation] = useState('');
   const [loading, setLoading] = useState(true);
   const [userEmail, setUserEmail] = useState(null);
-  const [isDealership, setIsDealership] = useState(null);
+  const [error, setError] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
 
   const districtsOfKerala = [
@@ -32,17 +33,35 @@ const Profile = () => {
           setName(userData.name || '');
           setPhone(userData.phone || '');
           setLocation(userData.location || '');
-          setIsDealership(userData.isDealership || 'no');
         }
         setLoading(false);
       } else {
         setLoading(false);
+        navigate("/");
       }
     });
-  }, []);
+
+    const handleBeforeUnload = (event) => {
+      if (isEditing) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isEditing, navigate]);
 
   const handleSave = async () => {
     if (!userEmail) return;
+
+    if (phone.length !== 10) {
+      setError('Phone number must have exactly 10 digits.');
+      return;
+    }
 
     const db = getFirestore();
     const userDoc = doc(db, 'userInfo', userEmail);
@@ -55,11 +74,18 @@ const Profile = () => {
     }, { merge: true });
 
     alert('Profile updated successfully!');
+    setIsEditing(false);
+    navigate('/');
 
-    if (isDealership === 'no') {
-      navigate('/');
+  };
+
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    if (/^\d{0,10}$/.test(value)) {
+      setPhone(value);
+      setError(''); // Clear error when valid input is entered
     } else {
-      navigate('/dealershipdashboard');
+      setError('Phone number must have exactly 10 digits.');
     }
   };
 
@@ -69,7 +95,22 @@ const Profile = () => {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-4 border rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4">Profile</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Profile</h2>
+        {!isEditing && (
+          <button 
+            className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
+            onClick={() => setIsEditing(true)}
+          >
+            Edit
+          </button>
+        )}
+      </div>
+      {error && (
+        <div className="mb-4 p-2 bg-red-200 text-red-800 border border-red-400 rounded">
+          {error}
+        </div>
+      )}
       <div className="mb-4">
         <label className="block text-gray-700">Name</label>
         <input 
@@ -77,6 +118,7 @@ const Profile = () => {
           className="w-full p-2 border rounded" 
           value={name} 
           onChange={(e) => setName(e.target.value)} 
+          disabled={!isEditing}
         />
       </div>
       <div className="mb-4">
@@ -85,7 +127,8 @@ const Profile = () => {
           type="text" 
           className="w-full p-2 border rounded" 
           value={phone} 
-          onChange={(e) => setPhone(e.target.value)} 
+          onChange={handlePhoneChange} 
+          disabled={!isEditing}
         />
       </div>
       <div className="mb-4">
@@ -94,6 +137,7 @@ const Profile = () => {
           className="w-full p-2 border rounded" 
           value={location} 
           onChange={(e) => setLocation(e.target.value)}
+          disabled={!isEditing}
         >
           <option value="">Select a district</option>
           {districtsOfKerala.map((district) => (
@@ -101,12 +145,14 @@ const Profile = () => {
           ))}
         </select>
       </div>
-      <button 
-        className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-700" 
-        onClick={handleSave}
-      >
-        Save
-      </button>
+      {isEditing && (
+        <button 
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-700" 
+          onClick={handleSave}
+        >
+          Save Changes
+        </button>
+      )}
     </div>
   );
 };
