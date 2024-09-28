@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import AddNewVehicle from './AddNewVehicle';
 import VehicleDetails from './VehicleDetails';
-import { fetchVehiclesFromFirestore, addVehicleToFirestore } from '../../firestoreService'; // Firestore functions
+import { fetchVehiclesFromFirestore, addVehicleToFirestore } from '../firestoreService'; // Firestore functions
 import Navbar from './Navbar';
 
 function GarageManagement() {
