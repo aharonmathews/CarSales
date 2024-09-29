@@ -11,6 +11,7 @@ import {
 } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 const SignIn = () => {
   const [reg, setReg] = useState("logIn");
