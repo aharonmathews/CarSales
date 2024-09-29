@@ -7,6 +7,7 @@ import pic1 from '../assets/carInterior.jpg';
 import plchldr from "../assets/CarPlaceholdr.jpg";
 import pic2 from "../assets/carSMbg.jpeg";
 import Card1 from "../components/Card1";
+import Help from "../components/chatbothelp";
 
 const data = [
   {
@@ -77,6 +78,7 @@ const UserHome = () => {
   return (
     <>
       <div className='hidden md:block'>
+        <Help />
         <Navbar />
         <div className="relative m-10">
           <div

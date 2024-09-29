@@ -11,6 +11,7 @@ import GarageManagement from './dealership/GarageManagement';
 import AddNewVehicle from './dealership/AddNewVehicle';
 import Profile from "./user/userProfile";
 import DealershipSignIn from "./dealership/dealerLogin";
+import HelpButton from "./components/chatbothelp";
 
 function App() {
   return (
