@@ -15,6 +15,7 @@ import DealershipSignIn from "./dealership/dealerLogin";
 import Feedbacks from "./dealership/Feedbacks";
 import Chats from "./dealership/Chats";
 import UserEmails from "./dealership/UserEmails";
+import Feedback from "./user/Feedback";
 function App() {
   return (
     <Router>
@@ -28,6 +29,7 @@ function App() {
         <Route path="/compareCars" element={<CompareCars />} />
         <Route path="/makeAnOffer" element={<MakeAnOffer />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/Feedback" element={<Feedback />} />
 
         {/* For dealership */}
         <Route path="/UserEmails" element={<UserEmails />} />
