@@ -206,6 +206,7 @@ const CarSales = () => {
 
   return (
     <div>
+    <div>
       <Navbar />
       <div className="flex p-5">
         <div className="w-1/5 pr-5 flex flex-col m-1 border-2 border-[#bcbcbc] rounded-md p-4">
@@ -335,6 +336,8 @@ const CarSales = () => {
           )}
         </div>
       </div>
+    </div>
+    <Footer/>
     </div>
   );
 };

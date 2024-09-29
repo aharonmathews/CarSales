@@ -105,7 +105,7 @@ const Wishlist = () => {
         ))}
       </div>
       </div>
-      
+      <Footer/>
     </>
   );
 };

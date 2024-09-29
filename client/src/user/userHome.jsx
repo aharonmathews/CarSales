@@ -8,6 +8,8 @@ import plchldr from "../assets/CarPlaceholdr.jpg";
 import pic2 from "../assets/carSMbg.jpeg";
 import Card1 from "../components/Card1";
 import Help from "../components/chatbothelp";
+import Footer from '../components/Footer';
+import Feedback from './Feedback';
 
 const data = [
   {
@@ -122,6 +124,7 @@ const UserHome = () => {
           </div>
         ))}
       </div>
+      <Footer/>
     </>
   );
 };

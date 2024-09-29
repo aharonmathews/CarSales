@@ -100,6 +100,7 @@ const SignIn = () => {
   };
 
   return (
+    <div>
     <div className='grid md:grid-cols-2 h-screen md:overflow-clip'>
       <div className='flex flex-row justify-center'>
         {reg === "logIn" ? (
@@ -176,6 +177,8 @@ const SignIn = () => {
       <div className='hidden md:block'>
         <img className='h-screen w-screen object-cover' src={bg2} alt="background" />
       </div>
+    </div>
+    <Footer/>
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import LocationMenu from './Location';
+import Footer from './Footer';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -38,51 +40,27 @@ const Navbar = () => {
   };
 
   return (
-    <div className='flex flex-row min-h-16 border-b-2 border-black justify-between'> {/* navbar */}
-      <div className='flex flex-row'>
-        <div className='flex flex-row items-center ml-3 mr-8 hover:cursor-pointer' onClick={() => navigate('/')}>
-          Logo
-        </div>
-        
-        <form onSubmit={handleSearch}>
-          <input 
-            type="text" 
-            id="search" 
-            className='max-w-[40rem] min-w-[25rem] p-1 flex border-2  m-5 px-3 py-1 rounded-lg' placeholder='Search'
-            onChange={(e) => setSearch(e.target.value)} />
-        </form>
-      </div>
+    <div className='flex flex-row min-h-16 border-b-2 border-black justify-between shadow-lg'> {/* navbar */}
+      <div className="box1 flex space-x-5 items-center">
+                <div className="logo m-8" onClick={()=> navigate("/")}>Logo</div>
+                <div className="sbar w-200">
+                  <input type="text" placeholder="Search..." className="w-80 p-2 border-2 border-gray-300 focus:bg-gray-100 outline-none" onChange={(e)=>setSearch(e.target.value)}/>
+                </div>
+              </div>
       
       <div className='flex flex-row gap-7 items-center justify-center mr-10'>
-        <a className='flex flex-row hover:cursor-pointer hover:text-zinc-600 border-b-2' onClick={() => navigate("/wishlist")}>
+        <a className='e1 hover:underline hover:cursor-pointer' onClick={()=> navigate("/wishlist")}>
           Wishlist
         </a>
+        <LocationMenu />
 
-        {/* New Messages button */}
-        <a className='flex flex-row hover:cursor-pointer hover:text-zinc-600 border-b-2' onClick={() => navigate("/Chats")}>
-          Messages
-        </a>
-
-        <p className='border-b-2'>
-          Location
-        </p>
-
-        {user ? (
-          <>
-            <button onClick={handleProfileClick} className='border-2 border-gray-500 bg-slate-200 px-3 py-1 rounded-lg hover:bg-slate-300'>
-              {user.displayName || user.email}
-            </button>
-            <button onClick={handleSignOut} className='border-2 border-gray-500 bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-700'>
-              Sign Out
-            </button>
-          </>
-        ) : (
-          <button className='border-2 border-gray-500 bg-slate-200 px-3 py-1 rounded-lg hover:bg-slate-300' onClick={() => navigate("/signIn")} target="_blank">
-            Sign In
-          </button>
-        )}
+        <button className='button border border-black px-4 py-2 hover:bg-black hover:text-white transition-colors' onClick={() => navigate("/signIn")} target="_blank">
+          Sign In
+        </button> 
       </div>
+      
     </div>
+    
   );
 };
 
