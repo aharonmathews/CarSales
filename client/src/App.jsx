@@ -11,11 +11,11 @@ import GarageManagement from './dealership/GarageManagement';
 import AddNewVehicle from './dealership/AddNewVehicle';
 import Profile from "./user/userProfile";
 import DealershipSignIn from "./dealership/dealerLogin";
-
+import HelpButton from "./components/chatbothelp";
 import Feedbacks from "./dealership/Feedbacks";
 import Chats from "./dealership/Chats";
 import UserEmails from "./dealership/UserEmails";
-import Feedback from "./user/Feedback";
+
 function App() {
   return (
     <Router>
@@ -29,8 +29,7 @@ function App() {
         <Route path="/compareCars" element={<CompareCars />} />
         <Route path="/makeAnOffer" element={<MakeAnOffer />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/Feedback" element={<Feedback />} />
-
+        <Route path="/HelpButton" element={<HelpButton />} />
         {/* For dealership */}
         <Route path="/UserEmails" element={<UserEmails />} />
         <Route path="/Feedbacks" element={<Feedbacks />} />
