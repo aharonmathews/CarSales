@@ -57,9 +57,16 @@ const Navbar = () => {
         <a className='flex flex-row hover:cursor-pointer hover:text-zinc-600 border-b-2' onClick={() => navigate("/wishlist")}>
           Wishlist
         </a>
+
+        {/* New Messages button */}
+        <a className='flex flex-row hover:cursor-pointer hover:text-zinc-600 border-b-2' onClick={() => navigate("/Chats")}>
+          Messages
+        </a>
+
         <p className='border-b-2'>
           Location
         </p>
+
         {user ? (
           <>
             <button onClick={handleProfileClick} className='border-2 border-gray-500 bg-slate-200 px-3 py-1 rounded-lg hover:bg-slate-300'>

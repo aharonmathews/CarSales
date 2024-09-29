@@ -24,15 +24,11 @@ const DealershipDashboard = () => {
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userDoc = doc(db, 'dealershipsInfo', user.email);
+        const userDoc = doc(db, 'userInfo', user.email);
         const userSnapshot = await getDoc(userDoc);
         if (userSnapshot.exists()) {
           const userData = userSnapshot.data();
-          if (userData.isDealer === 'yes') {
-            setLoading(false);
-          } else {
-            navigate('/');
-          }
+          setLoading(false);
         } else {
           navigate('/');
         }
@@ -85,6 +81,22 @@ const DealershipDashboard = () => {
             onClick={() => navigate('/AddNewVehicle')}
           >
             Add new vehicle
+          </button>
+        </div>
+
+        {/* New Buttons - Feedbacks and Chats */}
+        <div className="flex gap-5 mb-5">
+          <button
+            className="px-5 py-2 rounded-lg border border-gray-400 cursor-pointer bg-white transition-colors duration-300 hover:bg-gray-200"
+            onClick={() => navigate('/Feedbacks')}
+          >
+            Feedbacks
+          </button>
+          <button
+            className="px-5 py-2 rounded-lg border border-gray-400 cursor-pointer bg-white transition-colors duration-300 hover:bg-gray-200"
+            onClick={() => navigate('/Chats')}
+          >
+            Chats
           </button>
         </div>
 
