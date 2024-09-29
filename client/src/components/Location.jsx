@@ -28,7 +28,7 @@ const LocationMenu = () => {
 
       {/* Dropdown menu */}
       {showDropdown && (
-        <div className="absolute mt-5 mr-3 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+        <div className="absolute mt-5 mr-3 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
           <div className="py-1 max-h-60 overflow-y-auto">
             {locations.map((location, index) => (
               <div
