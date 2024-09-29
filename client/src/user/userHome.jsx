@@ -14,22 +14,26 @@ const data = [
     img: plchldr,
     title: "Car 1",
     text: "Cost",
+    dealership: "Delaership1",
   },
   {
     img: plchldr,
     title: "Car 2",
     text: "Cost",
+    dealership: "Dealership2"
   },
   {
     img: plchldr,
     title: "Car 3",
     text: "Cost",
+    dealership: "Dealership3"
   },
   {
     img: plchldr,
     title: "Car 4",
     text: "Cost",
-  },
+    dealership: "Dealership4"
+    },
 ];
 
 const UserHome = () => {

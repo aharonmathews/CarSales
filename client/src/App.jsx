@@ -11,14 +11,10 @@ import GarageManagement from './dealership/GarageManagement';
 import AddNewVehicle from './dealership/AddNewVehicle';
 import Profile from "./user/userProfile";
 import DealershipSignIn from "./dealership/dealerLogin";
-<<<<<<< HEAD
-import HelpButton from "./components/chatbothelp";
-
-=======
 import Feedbacks from "./dealership/Feedbacks";
 import Chats from "./dealership/Chats";
 import UserEmails from "./dealership/UserEmails";
->>>>>>> 32bfd4e9b0d031576f05492b8c1fbef48f5a9e7d
+
 function App() {
   return (
     <Router>
