@@ -5,33 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import pic1 from '../assets/carInterior.jpg';
 import plchldr from "../assets/CarPlaceholdr.jpg";
-import pic2 from "../assets/carSMbg.jpeg";
-import Card1 from "../components/Card1";
 import Help from "../components/chatbothelp";
 import Footer from '../components/Footer';
-
-const data = [
-  {
-    img: plchldr,
-    title: "Car 1",
-    text: "Cost",
-  },
-  {
-    img: plchldr,
-    title: "Car 2",
-    text: "Cost",
-  },
-  {
-    img: plchldr,
-    title: "Car 3",
-    text: "Cost",
-  },
-  {
-    img: plchldr,
-    title: "Car 4",
-    text: "Cost",
-  },
-];
 
 const UserHome = () => {
   const [search, setSearch] = useState("");
@@ -122,23 +97,6 @@ const UserHome = () => {
           </div>
         </div>
       </div>
-
-      <div className='block md:hidden'>
-        <img src={pic2} className='absolute h-[16rem] w-full' />
-        <div className='relative z-10 p-12 lg:p-16'>
-          <p className='text-slate-200 font-semibold text-8xl text-border'>Car?</p>
-          <form onSubmit={handleSearch} className='flex flex-row items-center'>
-            <input
-              type="text"
-              id="search"
-              className='w-[30rem] p-3 flex border-2 my-4 lg:my-8 ml-5 px-3 py-1 rounded-lg text-xl'
-              placeholder='Find your car!'
-              onChange={(e) => setSearch(e.target.value)} 
-            />
-          </form>
-        </div>
-      </div>
-
       <div className='text-4xl font-semibold md:mt-24 mx-16'>
         All Cars
       </div>
