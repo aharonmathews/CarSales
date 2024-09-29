@@ -72,7 +72,7 @@ const AddNewVehicle = () => {
           "Content-Type": "application/json",
           "x-rapidapi-host":
             "rto-vehicle-information-verification-india.p.rapidapi.com",
-          "x-rapidapi-key": "9040e05c7bmshc942319d7e3ed1dp197e80jsnd8762fa6f2dc", // Replace with your actual API key
+          "x-rapidapi-key": "9ecdfee856msh15ac3884659cc13p1cdfb6jsn23ddb3f38179", // Replace with your actual API key
         },
         data: {
           reg_no: formData.reg_no,
