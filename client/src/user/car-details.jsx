@@ -53,7 +53,7 @@ const CarDetails = () => {
   };
 
   const handleCompareClick = () => {
-    navigate("/compare-cars", { state: { img, title, text } });
+    navigate("/CompareCars", { state: { img, title, text } });
   };
 
   const renderTabContent = () => {
