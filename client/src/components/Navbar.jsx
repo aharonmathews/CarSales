@@ -55,6 +55,9 @@ const Navbar = () => {
       </div>
       
       <div className='flex flex-row gap-7 items-center justify-center mr-10'>
+      <button className='flex flex-row hover:cursor-pointer hover:text-zinc-600 border-b-2' onClick={() => navigate("/Chats")}>
+          Message
+        </button>
         <button className='flex flex-row hover:cursor-pointer hover:text-zinc-600 border-b-2' onClick={() => navigate("/wishlist")}>
           Wishlist
         </button>
