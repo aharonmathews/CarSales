@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 const Profile = () => {
   const [name, setName] = useState('');
@@ -95,7 +96,7 @@ const Profile = () => {
 
   return (
     <div>
-    <div className="max-w-md mx-auto mt-10 p-4 border rounded-lg shadow-lg">
+    <div className="max-w-md mx-auto mt-10 p-4 border rounded-lg shadow-lg mb-72">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Profile</h2>
         {!isEditing && (
