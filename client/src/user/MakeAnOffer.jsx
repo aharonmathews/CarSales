@@ -23,6 +23,7 @@ const MakeAnOffer = () => {
   };
 
   return (
+    <div>
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold mb-6">Make an Offer for {title}</h2>
@@ -74,6 +75,8 @@ const MakeAnOffer = () => {
           Submit Offer
         </button>
       </div>
+    </div>
+    <Footer/>
     </div>
   );
 };

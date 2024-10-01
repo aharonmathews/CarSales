@@ -1,3 +1,4 @@
+import LocationMenu from './Location';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
@@ -20,7 +21,7 @@ const Navbar = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate(`/search?query=${search}`);
+    navigate(`/search?query=${encodeURIComponent(search)}`);
   };
 
   const handleSignOut = async () => {
@@ -54,19 +55,10 @@ const Navbar = () => {
       </div>
       
       <div className='flex flex-row gap-7 items-center justify-center mr-10'>
-        <a className='flex flex-row hover:cursor-pointer hover:text-zinc-600 border-b-2' onClick={() => navigate("/wishlist")}>
+        <button className='flex flex-row hover:cursor-pointer hover:text-zinc-600 border-b-2' onClick={() => navigate("/wishlist")}>
           Wishlist
-        </a>
-
-        {/* New Messages button */}
-        <a className='flex flex-row hover:cursor-pointer hover:text-zinc-600 border-b-2' onClick={() => navigate("/Chats")}>
-          Messages
-        </a>
-
-        <p className='border-b-2'>
-          Location
-        </p>
-
+        </button>
+        <LocationMenu />
         {user ? (
           <>
             <button onClick={handleProfileClick} className='border-2 border-gray-500 bg-slate-200 px-3 py-1 rounded-lg hover:bg-slate-300'>
@@ -77,7 +69,7 @@ const Navbar = () => {
             </button>
           </>
         ) : (
-          <button className='border-2 border-gray-500 bg-slate-200 px-3 py-1 rounded-lg hover:bg-slate-300' onClick={() => navigate("/signIn")} target="_blank">
+          <button className='border-2 border-gray-500 bg-slate-200 px-3 py-1 rounded-lg hover:bg-slate-300' onClick={() => navigate("/signIn")}>
             Sign In
           </button>
         )}
