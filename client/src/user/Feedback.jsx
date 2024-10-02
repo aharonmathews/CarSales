@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import LoadingGif from '../assets/Loadingcar.gif';  // Import the loading gif
 
 const Feedback = () => {
   const [name, setName] = useState('');
@@ -39,8 +40,9 @@ const Feedback = () => {
           }
           setLoading(false);
         } else {
+          // If no user is authenticated, keep the fields editable
+          setIsEditable(true);
           setLoading(false);
-          navigate('/');  // Redirect to homepage if no user is found
         }
       });
     };
@@ -53,14 +55,14 @@ const Feedback = () => {
     setSubmitted(true);
 
     const db = getFirestore();
-    const docRef = doc(db, `Reviews/${name}_${email}`);
-
     const timestamp = new Date().toISOString(); // Generate a unique timestamp
+    const feedbackDoc = doc(db, 'Reviews', `${name}_${email}`);
 
     try {
-      await updateDoc(docRef, {
+      // Create or update a document with the review message using setDoc
+      await setDoc(feedbackDoc, {
         [timestamp]: message, // Use the timestamp as the field name for the review
-      });
+      }, { merge: true }); // Merge to avoid overwriting existing fields
 
       console.log('Review added successfully');
     } catch (error) {
@@ -74,7 +76,11 @@ const Feedback = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <img src={LoadingGif} alt="Loading..." className="w-32 h-32" />
+      </div>
+    );
   }
 
   return (

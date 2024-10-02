@@ -7,6 +7,7 @@ import pic1 from '../assets/carInterior.jpg';
 import plchldr from "../assets/CarPlaceholdr.jpg";
 import Help from "../components/chatbothelp";
 import Footer from '../components/Footer';
+import loadingGif from '../assets/Loadingcar.gif'; // Import your loading GIF
 
 const UserHome = () => {
   const [search, setSearch] = useState("");
@@ -65,7 +66,7 @@ const UserHome = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="loader">Loading...</div>
+        <img src={loadingGif} className="w-32 h-32" /> {/* Display loading GIF */}
       </div>
     );
   }
@@ -74,6 +75,7 @@ const UserHome = () => {
 
   return (
     <>
+    <div className="bg-[#efefff]">
       <div className='hidden md:block'>
         <Help />
         <Navbar />
@@ -117,6 +119,7 @@ const UserHome = () => {
         ))}
       </div>
       <Footer />
+      </div>
     </>
   );
 };

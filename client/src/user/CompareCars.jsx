@@ -65,12 +65,12 @@ function CompareCars() {
           <tbody>
             <tr>
               <th className="item p-3 border">Name</th>
-              <th className="item p-3 border ">
+              <th className="item p-3 border">
                 <div className='flex justify-center items-start h-24'>
                   <Dpmenu onCarSelect={setSelectedCar1} cars={cars} /> {/* Pass car data */}
                 </div>
                 <div className="flex justify-center items-center">
-                  {selectedCar1 && <img src={cars.find(car => car.name === selectedCar1)?.img} className="c-img w-72 max-h-96 mt-5 object-cover border-2 border-gray-300" alt={selectedCar1} />}
+                  {selectedCar1 && <img src={cars.find(car => car.name === selectedCar1)?.image} className="c-img w-72 max-h-96 mt-5 object-cover border-2 border-gray-300" alt={selectedCar1} />}
                 </div>
               </th>
               <th className="item p-3 border">
@@ -78,7 +78,7 @@ function CompareCars() {
                   <Dpmenu onCarSelect={setSelectedCar2} cars={cars} /> {/* Pass car data */}
                 </div>
                 <div className="flex justify-center items-center">
-                  {selectedCar2 && <img src={cars.find(car => car.name === selectedCar2)?.img} className="c-img w-72 max-h-96 mt-5 object-cover border-2 border-gray-300" alt={selectedCar2} />}
+                  {selectedCar2 && <img src={cars.find(car => car.name === selectedCar2)?.image} className="c-img w-72 max-h-96 mt-5 object-cover border-2 border-gray-300" alt={selectedCar2} />}
                 </div>
               </th>
             </tr>

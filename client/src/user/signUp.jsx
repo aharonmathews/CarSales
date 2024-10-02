@@ -106,30 +106,30 @@ const SignIn = () => {
       <div className='flex flex-row justify-center'>
         {reg === "logIn" ? (
           <div className='flex flex-col h-screen justify-center'>
-            <p className='text-5xl font-serif font-semibold my-4'>Welcome back!</p>
-            <p className='text-2xl font-serif mb-5'>Log in to your account</p>
+            <p className='text-5xl font-bold my-4'>Welcome back.</p>
+            <p className='text-2xl font-normal mb-5 ml-2'>Log in to your account</p>
             <div>
               <form className='flex flex-col' onSubmit={handleLogin}>
                 <p className='font-semibold text-lg ml-2'>Email</p>
                 <input 
-                  className='border-2 border-zinc-400 mb-5 w-[23.5rem] p-1 rounded-xl' 
+                  className='border-2 border-zinc-400 mb-5 ml-2 mt-1 w-[23.5rem] p-2' 
                   placeholder='Enter your email'
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 <p className='font-semibold text-lg ml-2'>Password</p>
                 <input 
-                  className='border-2 border-zinc-400 mb-5 w-[23.5rem] p-1 rounded-xl' 
+                  className='border-2 border-zinc-400 mb-5 ml-2 mt-1 w-[23.5rem] p-2' 
                   placeholder='Enter your password' 
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <button className='border-2 rounded-lg text-white bg-black hover:bg-slate-500 p-4 w-[23.5rem]' type="submit" disabled={loading}>
+                <button className='border-2 ml-1 rounded-lg text-white bg-gray-800 hover:bg-slate-500 p-4 w-[23.5rem]' type="submit" disabled={loading}>
                   {loading ? 'Logging in...' : 'Login'}
                 </button>
               </form>
-              <div className='mt-3'>
+              <div className='mt-3 ml-2'>
                 Don&apos;t have an account?  
                 <a className='text-blue-500 mx-1 hover:border-b-2 hover:text-blue-700 hover:cursor-pointer' onClick={() => setReg("signIn")}>
                   Create your account!

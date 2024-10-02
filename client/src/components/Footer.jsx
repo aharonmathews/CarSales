@@ -1,14 +1,30 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { getAuth } from 'firebase/auth';
 
 const Footer = () => {
+  const navigate = useNavigate();
+  const auth = getAuth();
+
+  const handleFeedbackClick = () => {
+    const user = auth.currentUser;
+    if (user) {
+      navigate('/Feedback'); // If the user is logged in, go to Feedback page
+    } else {
+      navigate('/signIn'); // If the user is not logged in, go to SignIn page
+    }
+  };
+
   return (
-    <footer className="bg-gray-800 text-white p-6 mt-10 ">
-      <div className=" mx-auto flex justify-between items-center">
+    <footer className="bg-gray-800 text-white p-6 bottom-0 fixed w-full">
+      <div className="container mx-auto flex justify-between items-center">
         <p className="text-sm">© 2024 Car Dealership. All rights reserved.</p>
-        <Link to="/Feedback" className="text-sm hover:underline">
+        <button
+          onClick={handleFeedbackClick}
+          className="text-sm hover:underline cursor-pointer"
+        >
           Give Feedback
-        </Link>
+        </button>
       </div>
     </footer>
   );

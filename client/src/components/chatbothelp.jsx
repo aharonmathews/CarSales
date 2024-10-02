@@ -47,7 +47,7 @@ function Chatbot() {
       {!isOpen && (
         <button
           onClick={toggleChat}
-          className="fixed bottom-10 right-10 bg-purple-500 text-white p-4 rounded-full shadow-lg hover:bg-purple-600 transition-all"
+          className="fixed bottom-20 right-4 bg-gray-800 text-white p-4 rounded-full shadow-lg hover:bg-gray-700 transition-all"
         >
           💬 Chat
         </button>
@@ -55,9 +55,9 @@ function Chatbot() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-10 right-10 bg-white w-80 h-96 shadow-lg rounded-lg flex flex-col">
+        <div className="fixed bottom-20 right-3 bg-white w-80 h-96 shadow-lg rounded-lg flex flex-col">
           {/* Header */}
-          <div className="bg-purple-600 text-white p-4 flex justify-between items-center rounded-md">
+          <div className="bg-gray-800 text-white p-4 flex justify-between items-center rounded-md">
             <span className="font-bold">Chat with us</span>
             <button onClick={toggleChat} className="text-white font-bold">✕</button>
           </div>
@@ -69,8 +69,8 @@ function Chatbot() {
                 key={index}
                 className={`mb-4 ${
                   message.role === "user"
-                    ? "text-right text-blue-600"
-                    : "text-left text-purple-600"
+                    ? "text-right text-blue-800"
+                    : "text-left text-purple-800"
                 }`}
               >
                 <p
@@ -102,7 +102,7 @@ function Chatbot() {
             />
             <button
               type="submit"
-              className={`ml-2 bg-purple-500 text-white p-2 rounded-md hover:bg-purple-600 transition-all ${
+              className={`ml-2 bg-gray-800 text-white p-2 rounded-md hover:bg-gray-700 transition-all ${
                 generatingAnswer ? "opacity-50 cursor-not-allowed" : ""
               }`}
               disabled={generatingAnswer}

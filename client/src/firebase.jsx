@@ -32,23 +32,24 @@ import { getAuth } from "firebase/auth";
 //   measurementId: "G-2QC6EV2JB9"
 
 // }
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDjA7-DRFvNWdlCMr9Z7r7IU4S41diTH0o",
+//   authDomain: "carsalesnew-67ba2.firebaseapp.com",
+//   projectId: "carsalesnew-67ba2",
+//   storageBucket: "carsalesnew-67ba2.appspot.com",
+//   messagingSenderId: "622232900196",
+//   appId: "1:622232900196:web:057a25f0221f57b7ca0571",
+//   measurementId: "G-HRR86PDL86"
+// };
 const firebaseConfig = {
-
-  apiKey: "AIzaSyC3CZTCKME1X83IotKT_eyHDqcu7MNsO9c",
-
-  authDomain: "chandi-9dc8f.firebaseapp.com",
-
-  projectId: "chandi-9dc8f",
-
-  storageBucket: "chandi-9dc8f.appspot.com",
-
-  messagingSenderId: "558114302237",
-
-  appId: "1:558114302237:web:26998b4cfdd7a87b2859f4",
-
-  measurementId: "G-2QC6EV2JB9"
-
-}
+  apiKey: "AIzaSyA9i7POAyTqzlCSfr2imOH7BaBPFhBjEgI",
+  authDomain: "carsales-12f02.firebaseapp.com",
+  projectId: "carsales-12f02",
+  storageBucket: "carsales-12f02.appspot.com",
+  messagingSenderId: "777909992350",
+  appId: "1:777909992350:web:4d2fe14b3aa22c9e60748f",
+  measurementId: "G-1GMP2F77MT"
+};
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
