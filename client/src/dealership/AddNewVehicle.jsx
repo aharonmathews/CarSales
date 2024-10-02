@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { addVehicleToFirestore } from "../firestoreService";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import axios from "axios";
+import { getAuth } from "firebase/auth";
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 
 const AddNewVehicle = () => {
   const [formData, setFormData] = useState({
-    id: Date.now(),
     name: "",
+    trackerid: "", // Updated to store trackerid
     overview: "",
     price: "",
     engine: "",
@@ -18,40 +20,59 @@ const AddNewVehicle = () => {
     tyreSize: "",
     seatingCapacity: "",
     images: [],
-    reg_no: "", // Registration/plate number input
-    reg_date: "", // Vehicle registration date
-    owner_name: "", // Vehicle owner name
-    owner_father_name: "", // Owner's father name
-    current_address_line1: "", // Owner's current address line 1
-    current_address_line2: "", // Owner's current address line 2
-    current_district_name: "", // Owner's current district name
-    current_state: "", // Owner's current state
-    current_pincode: "", // Owner's current pincode
-    permanent_address_line1: "", // Owner's permanent address line 1
-    permanent_address_line2: "", // Owner's permanent address line 2
-    permanent_district_name: "", // Owner's permanent district
-    permanent_state: "", // Owner's permanent state
-    permanent_pincode: "", // Owner's permanent pincode
-    chassis_no: "", // Vehicle chassis number
-    engine_no: "", // Vehicle engine number
-    vehicle_manufacturer_name: "", // Vehicle manufacturer name
-    model: "", // Vehicle model
-    body_type: "", // Vehicle body type
-    vehicle_class_desc: "", // Vehicle class description
-    vehicle_gross_weight: "", // Vehicle gross weight
-    cubic_cap: "", // Vehicle cubic capacity
-    insurance_upto: "", // Insurance validity
-    insurance_company_name: "", // Insurance company name
-    permit_valid_upto: "", // Permit validity
-    pucc_upto: "", // PUCC validity
+    reg_no: "",
+    reg_date: "",
+    owner_name: "",
+    owner_father_name: "",
+    current_address_line1: "",
+    current_address_line2: "",
+    current_district_name: "",
+    current_state: "",
+    current_pincode: "",
+    permanent_address_line1: "",
+    permanent_address_line2: "",
+    permanent_district_name: "",
+    permanent_state: "",
+    permanent_pincode: "",
+    chassis_no: "",
+    engine_no: "",
+    vehicle_manufacturer_name: "",
+    model: "",
+    body_type: "",
+    vehicle_class_desc: "",
+    vehicle_gross_weight: "",
+    cubic_cap: "",
+    insurance_upto: "",
+    insurance_company_name: "",
+    permit_valid_upto: "",
+    pucc_upto: "",
   });
 
-  const [loading, setLoading] = useState(false); // For loading animation
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [previewMode, setPreviewMode] = useState(false);
+  const [username, setUsername] = useState("");
+  const [vehicleCount, setVehicleCount] = useState(0);
   const navigate = useNavigate();
 
-  // Handle input changes
+  // Fetch user info and vehicle count
+  useEffect(() => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (user) {
+      setUsername(user.displayName || user.email);
+      const fetchVehicleCount = async () => {
+        const db = getFirestore();
+        const vehiclesRef = collection(db, 'vehicles');
+        const vehicleQuery = query(vehiclesRef, where('owner_id', '==', user.uid));
+        const vehicleSnapshot = await getDocs(vehicleQuery);
+        setVehicleCount(vehicleSnapshot.size);
+      };
+      fetchVehicleCount();
+    }
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -84,7 +105,7 @@ const AddNewVehicle = () => {
           "Content-Type": "application/json",
           "x-rapidapi-host":
             "rto-vehicle-information-verification-india.p.rapidapi.com",
-          "x-rapidapi-key": "9ecdfee856msh15ac3884659cc13p1cdfb6jsn23ddb3f38179", // Replace with your actual API key
+          "x-rapidapi-key": "620f835ecbmsh29d32fcdb628b7dp18806ajsn6d0e54934ad2", // Replace with your actual API key
         },
         data: {
           reg_no: formData.reg_no,
@@ -138,12 +159,21 @@ const AddNewVehicle = () => {
       setLoading(false);
     }
   };
+// Handle form submission
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setPreviewMode(true);
-  };
+  // Update trackerid with the username and vehicle count
+  const updatedTrackerId = `${username}/${vehicleCount + 1}`;
+
+  setFormData((prevState) => ({
+    ...prevState,
+    trackerid: updatedTrackerId, // Set the updated trackerid
+  }));
+
+  setPreviewMode(true);
+};
+
 
   const handleFinalSave = async () => {
     try {
@@ -181,10 +211,11 @@ const AddNewVehicle = () => {
         </div>
 
         {/* Vehicle Information Form */}
-        {!loading && formData.reg_no && (
+        {(
           <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-3xl bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-semibold mb-4">Add New Vehicle</h2>
 
+            {/* Other form fields */}
             <div>
               <label className="block font-medium">Car Name</label>
               <input
@@ -195,7 +226,8 @@ const AddNewVehicle = () => {
                 className="p-3 w-full border rounded-lg"
               />
             </div>
-
+            {/* Repeat similar blocks for other fields... */}
+            
             <div>
               <label className="block font-medium">Overview</label>
               <textarea
@@ -205,7 +237,6 @@ const AddNewVehicle = () => {
                 className="p-3 w-full border rounded-lg"
               />
             </div>
-
             <div>
               <label className="block font-medium">Engine</label>
               <input
@@ -430,11 +461,6 @@ const AddNewVehicle = () => {
                 ))}
               </div>
             </div>
-
-
-            {/* Add other vehicle fields similar to the car name */}
-            {/* ... */}
-
             <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
               Preview Details
             </button>
@@ -449,6 +475,9 @@ const AddNewVehicle = () => {
             <button onClick={handleFinalSave} className="bg-green-500 text-white px-4 py-2 rounded">
               Save Vehicle
             </button>
+            <button onClick={() => setPreviewMode(false)} className="bg-red-500 text-white px-4 py-2 rounded">
+              Edit
+            </button>
           </div>
         )}
       </div>
@@ -456,4 +485,4 @@ const AddNewVehicle = () => {
   );
 };
 
-export default AddNewVehicle;
+export default AddNewVehicle;

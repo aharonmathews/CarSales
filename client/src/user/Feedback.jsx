@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -7,27 +10,77 @@ const Feedback = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isEditable, setIsEditable] = useState(true);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const auth = getAuth();
+    const db = getFirestore();
+
+    // Check user authentication and fetch user data from Firestore
+    const checkUser = async () => {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          setEmail(user.email);  // Prefill email from Firebase Authentication
+
+          // Fetch user data from Firestore
+          const userDoc = doc(db, 'userInfo', user.email);
+          const userSnapshot = await getDoc(userDoc);
+
+          if (userSnapshot.exists()) {
+            const userData = userSnapshot.data();
+            setName(userData.name || '');
+          }
+
+          // If both name and email are present, make fields uneditable
+          if (user.email && userSnapshot.exists() && userSnapshot.data().name) {
+            setIsEditable(false);
+          }
+          setLoading(false);
+        } else {
+          setLoading(false);
+          navigate('/');  // Redirect to homepage if no user is found
+        }
+      });
+    };
+
+    checkUser();
+  }, [navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitted(true);
-    console.log({
-      name,
-      email,
-      message
-    });
-    // Reset the form
+
+    const db = getFirestore();
+    const docRef = doc(db, `Reviews/${name}_${email}`);
+
+    const timestamp = new Date().toISOString(); // Generate a unique timestamp
+
+    try {
+      await updateDoc(docRef, {
+        [timestamp]: message, // Use the timestamp as the field name for the review
+      });
+
+      console.log('Review added successfully');
+    } catch (error) {
+      console.error('Error adding review:', error);
+    }
+
+    // Reset form
     setName('');
     setEmail('');
     setMessage('');
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
-      <div>
-        <Navbar />
-      </div>
-      
+      <Navbar />
+
       <div className="flex-grow">
         <div className="container mx-auto p-10 max-w-lg bg-slate-100 shadow-lg mt-10 mb-10">
           <h1 className="text-3xl font-semibold mb-6">We Value Your Feedback!</h1>
@@ -49,8 +102,8 @@ const Feedback = () => {
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-600"
-                    required
+                    className={`w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-600 ${!isEditable ? 'text-gray-400 bg-gray-100' : ''}`}
+                    readOnly={!isEditable}
                   />
                 </div>
 
@@ -63,8 +116,8 @@ const Feedback = () => {
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-600"
-                    required
+                    className={`w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-600 ${!isEditable ? 'text-gray-400 bg-gray-100' : ''}`}
+                    readOnly={!isEditable}
                   />
                 </div>
 
@@ -93,7 +146,7 @@ const Feedback = () => {
           )}
         </div>
       </div>
-      
+
       <Footer />
     </div>
   );

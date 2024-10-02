@@ -62,15 +62,14 @@ const Wishlist = () => {
       <div className="m-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Wishlist</h1>
-            <p className="mb-4">You have {wishlistItems.length} saved items</p>
-          </div>
-          <button
-            className="bg-black text-white px-4 py-2 rounded-md"
-            onClick={() => navigate("/CompareCars")}
-          >
-            Compare
-          </button>
+      <h1 className="text-2xl font-bold">Wishlist</h1>
+      <p className="mb-4">You have {wishlistItems.length} saved items</p>
+      </div>
+
+          
+      <button
+      className="bg-black text-white px-4 py-2 rounded-md"onClick={() => navigate("/CompareCars")} >Compare
+      </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {wishlistItems.map((item) => (
