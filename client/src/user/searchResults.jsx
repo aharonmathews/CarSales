@@ -1,90 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import sampleImage from '../assets/CarPlaceholdr.jpg';
 import Card1 from '../components/Card1';
 
+// Car data remains the same
 const carData = [
-  { id: 1, image: sampleImage, name: 'CAR1', price: 2000, insurance: true, hasAccident: false, owner: '1st', fuelType: 'Petrol' },
-  { id: 2, image: sampleImage, name: 'CAR2', price: 4000, insurance: false, hasAccident: true, owner: '2nd', fuelType: 'Diesel' },
-  { id: 3, image: sampleImage, name: 'CAR3', price: 7000, insurance: true, hasAccident: false, owner: '3rd', fuelType: 'CNG' },
-  // More cars...
+  // Same car data...
 ];
 
 const CarSales = () => {
-  const [checkboxes, setCheckboxes] = useState({
-    basicDetails: {
-      insurance: true,
-      'no accident': true,
-    },
-    owners: {
-      '1st': true,
-      '2nd': true,
-      '3rd': true,
-    },
-    fuel: {
-      Petrol: true,
-      Diesel: true,
-      CNG: true,
-    },
+  const [filters, setFilters] = useState({
+    name: '',
+    minPrice: '',
+    maxPrice: '',
+    engine: '',
+    fuelType: '',
+    reg_no: '',
+    owner_name: '',
   });
+
   const [filteredCars, setFilteredCars] = useState(carData);
-  const [showModal, setShowModal] = useState(false);
+  const [selectedCar, setSelectedCar] = useState(null); // For displaying car details
 
-  const location = useLocation();
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters({ ...filters, [name]: value });
+  };
 
-  // Apply filters function
   const applyFilters = () => {
-    const queryParams = new URLSearchParams(location.search);
-    const searchTerm = queryParams.get('query') || '';
-
     const filtered = carData.filter(car => {
-      const matchesSearch = car.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesName = filters.name ? car.name.toLowerCase().includes(filters.name.toLowerCase()) : true;
+      const matchesMinPrice = filters.minPrice ? Number(car.price) >= Number(filters.minPrice) : true;
+      const matchesMaxPrice = filters.maxPrice ? Number(car.price) <= Number(filters.maxPrice) : true;
+      const matchesEngine = filters.engine ? car.engine === filters.engine : true;
+      const matchesFuelType = filters.fuelType ? car.fuelType === filters.fuelType : true;
+      const matchesRegNo = filters.reg_no ? car.reg_no.toLowerCase().includes(filters.reg_no.toLowerCase()) : true;
+      const matchesOwnerName = filters.owner_name ? car.owner_name.toLowerCase().includes(filters.owner_name.toLowerCase()) : true;
 
-      // Only apply insurance filter if it's selected
-      const matchesInsurance = checkboxes.basicDetails.insurance ? car.insurance : true;
-
-      // Only apply accident filter if it's selected
-      const matchesAccident = checkboxes.basicDetails['no accident'] ? !car.hasAccident : true;
-
-      // Check if no owner checkboxes are selected
-      const noOwnersSelected = Object.values(checkboxes.owners).every(selected => !selected);
-      // Apply owner filters only if at least one owner type is selected
-      const matchesOwner = 
-        noOwnersSelected ||  // If no owners are selected, match all owners
-        (checkboxes.owners['1st'] && car.owner === '1st') ||
-        (checkboxes.owners['2nd'] && car.owner === '2nd') ||
-        (checkboxes.owners['3rd'] && car.owner === '3rd');
-
-      // Check if no fuel type checkboxes are selected
-      const noFuelSelected = Object.values(checkboxes.fuel).every(selected => !selected);
-      // Apply fuel filter only if one or more fuel types are selected
-      const matchesFuel = 
-        noFuelSelected ||  // If no fuel types are selected, match all fuel types
-        (checkboxes.fuel.Petrol && car.fuelType === 'Petrol') ||
-        (checkboxes.fuel.Diesel && car.fuelType === 'Diesel') ||
-        (checkboxes.fuel.CNG && car.fuelType === 'CNG');
-
-      return matchesSearch && matchesInsurance && matchesAccident && matchesOwner && matchesFuel;
+      return matchesName && matchesMinPrice && matchesMaxPrice && matchesEngine && matchesFuelType && matchesRegNo && matchesOwnerName;
     });
 
     setFilteredCars(filtered);
   };
 
-  // Handle opening modal to confirm filter application
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
-
-  // Handle closing modal
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
-  // Handle confirming filter application
-  const handleConfirmApplyFilters = () => {
-    applyFilters();
-    setShowModal(false);
+  const handleCarClick = (car) => {
+    setSelectedCar(car); // Set the clicked car to show its details
   };
 
   return (
@@ -92,110 +52,134 @@ const CarSales = () => {
       <Navbar />
       <div className="flex p-5">
         <div className="w-1/5 pr-5 flex flex-col m-1 border-2 border-[#bcbcbc] rounded-md p-4">
-          {/* Existing filters and checkboxes */}
+          {/* Filter inputs */}
           <div className="mb-4">
-            <p className='mb-1'>Basic Details</p>
-            {Object.keys(checkboxes.basicDetails).map(key => (
-              <label className="block mb-1" key={key}>
-                <input
-                  type="checkbox"
-                  checked={checkboxes.basicDetails[key]}
-                  onChange={() => setCheckboxes({
-                    ...checkboxes,
-                    basicDetails: {
-                      ...checkboxes.basicDetails,
-                      [key]: !checkboxes.basicDetails[key],
-                    },
-                  })}
-                  className="mr-1 accent-black h-3"
-                />
-                {key}
-              </label>
-            ))}
-          </div>
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={filters.name}
+              onChange={handleFilterChange}
+              className="border-2 p-2 rounded-md w-full mb-2"
+            />
 
-          {/* Owners filter */}
-          <div className="mb-4">
-            <p className='mb-1'>Owners</p>
-            {Object.keys(checkboxes.owners).map(key => (
-              <label className="block mb-1" key={key}>
-                <input
-                  type="checkbox"
-                  checked={checkboxes.owners[key]}
-                  onChange={() => setCheckboxes({
-                    ...checkboxes,
-                    owners: {
-                      ...checkboxes.owners,
-                      [key]: !checkboxes.owners[key],
-                    },
-                  })}
-                  className="mr-1 accent-black h-3"
-                />
-                {key} owner
-              </label>
-            ))}
-          </div>
+            {/* Price range filter */}
+            <div className="flex justify-between mb-2">
+              <input
+                type="number"
+                name="minPrice"
+                placeholder="Min Price"
+                value={filters.minPrice}
+                onChange={handleFilterChange}
+                className="border-2 p-2 rounded-md w-1/2 mr-2"
+              />
+              <input
+                type="number"
+                name="maxPrice"
+                placeholder="Max Price"
+                value={filters.maxPrice}
+                onChange={handleFilterChange}
+                className="border-2 p-2 rounded-md w-1/2"
+              />
+            </div>
 
-          {/* Fuel type filter */}
-          <div className="mb-4">
-            <p className='mb-1'>Fuel Type</p>
-            {Object.keys(checkboxes.fuel).map(key => (
-              <label className="block mb-1" key={key}>
-                <input
-                  type="checkbox"
-                  checked={checkboxes.fuel[key]}
-                  onChange={() => setCheckboxes({
-                    ...checkboxes,
-                    fuel: {
-                      ...checkboxes.fuel,
-                      [key]: !checkboxes.fuel[key],
-                    },
-                  })}
-                  className="mr-1 accent-black h-3"
-                />
-                {key}
-              </label>
-            ))}
-          </div>
+            {/* Engine Type Dropdown */}
+            <div className="mb-4">
+              <label className="block mb-1">Engine Type</label>
+              <select 
+                name="engine"
+                value={filters.engine}
+                onChange={handleFilterChange}
+                className="border-2 p-2 rounded-md w-full mb-2"
+              >
+                <option value="">All Engines</option>
+                <option value="V8">V8</option>
+                <option value="V6">V6</option>
+                <option value="Electric">Electric</option>
+                <option value="Hybrid">Hybrid</option>
+              </select>
+            </div>
 
-          <button onClick={handleOpenModal} className="bg-black text-white p-2 rounded">
-            Apply Filters
-          </button>
+            {/* Fuel Type Dropdown */}
+            <div className="mb-4">
+              <label className="block mb-1">Fuel Type</label>
+              <select 
+                name="fuelType"
+                value={filters.fuelType}
+                onChange={handleFilterChange}
+                className="border-2 p-2 rounded-md w-full mb-2"
+              >
+                <option value="">All Fuel Types</option>
+                <option value="Petrol">Petrol</option>
+                <option value="Diesel">Diesel</option>
+                <option value="CNG">CNG</option>
+                <option value="Electric">Electric</option>
+              </select>
+            </div>
+
+            <input
+              type="text"
+              name="reg_no"
+              placeholder="Registration No."
+              value={filters.reg_no}
+              onChange={handleFilterChange}
+              className="border-2 p-2 rounded-md w-full mb-2"
+            />
+
+            <input
+              type="text"
+              name="owner_name"
+              placeholder="Owner Name"
+              value={filters.owner_name}
+              onChange={handleFilterChange}
+              className="border-2 p-2 rounded-md w-full mb-2"
+            />
+
+            <button onClick={applyFilters} className="bg-black text-white p-2 rounded mt-4">
+              Apply Filters
+            </button>
+          </div>
         </div>
 
         <div className="w-4/5 pl-5">
-          {/* Display filtered cars */}
-          <div className="flex flex-wrap gap-4">
-            {filteredCars.length > 0 ? (
-              filteredCars.map((car, index) => (
-                <div key={index}>
-                  <Card1 img={car.image} title={car.name} text={`$${car.price}`} />
-                </div>
-              ))
-            ) : (
-              <p>No cars match the selected filters.</p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Modal for confirmation */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-md">
-            <h2>Apply Filters</h2>
-            <p>Are you sure you want to apply the selected filters?</p>
-            <div className="mt-4">
-              <button onClick={handleConfirmApplyFilters} className="bg-green-500 text-white p-2 rounded mr-2">
-                Apply
-              </button>
-              <button onClick={handleCloseModal} className="bg-red-500 text-white p-2 rounded">
-                Cancel
+          {selectedCar ? (
+            <div className="border-2 border-gray-300 p-5 rounded-lg">
+              {/* Display all car details */}
+              <h2 className="text-2xl mb-2">{selectedCar.name}</h2>
+              <img src={selectedCar.image} alt={selectedCar.name} className="mb-4" />
+              <p><strong>Price:</strong> ${selectedCar.price}</p>
+              <p><strong>Engine:</strong> {selectedCar.engine}</p>
+              <p><strong>Fuel Type:</strong> {selectedCar.fuelType}</p>
+              <p><strong>Transmission:</strong> {selectedCar.transmission}</p>
+              <p><strong>Mileage:</strong> {selectedCar.mileage} km/l</p>
+              <p><strong>Color:</strong> {selectedCar.color}</p>
+              <p><strong>Tyre Size:</strong> {selectedCar.tyreSize} inch</p>
+              <p><strong>Seating Capacity:</strong> {selectedCar.seatingCapacity}</p>
+              <p><strong>Registration No:</strong> {selectedCar.reg_no}</p>
+              <p><strong>Owner Name:</strong> {selectedCar.owner_name}</p>
+              {/* Add other car details as needed */}
+              <button
+                onClick={() => setSelectedCar(null)} // Go back to the list
+                className="mt-4 bg-gray-500 text-white p-2 rounded"
+              >
+                Back to List
               </button>
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-wrap gap-4">
+              {filteredCars.length > 0 ? (
+                filteredCars.map((car, index) => (
+                  <div key={index} onClick={() => handleCarClick(car)} className="cursor-pointer">
+                    <Card1 img={car.image} title={car.name} text={`$${car.price}`} />
+                  </div>
+                ))
+              ) : (
+                <p>No cars match the selected filters.</p>
+              )}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
