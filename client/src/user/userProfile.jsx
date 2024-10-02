@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 const Profile = () => {
   const [name, setName] = useState('');
