@@ -15,11 +15,16 @@ import Feedback from "./user/Feedback";
 import Feedbacks from "./dealership/Feedbacks";
 import Chats from "./dealership/Chats";
 import UserEmails from "./dealership/UserEmails";
+
+
+
 function App() {
+
   return (
     <Router>
       <Routes>
         {/* For normal user */}
+        
         <Route path="/" element={<UserHome />} />
         <Route path="/signIn" element={<SignIn />} />
         <Route path="/search" element={<SearchResults />} />
