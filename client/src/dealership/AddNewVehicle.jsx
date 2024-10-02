@@ -60,6 +60,18 @@ const AddNewVehicle = () => {
     }));
   };
 
+  const handleImageUpload = (e, index) => {
+    const file = e.target.files[0];
+    if (file) {
+      const newImages = [...formData.images];
+      newImages[index] = URL.createObjectURL(file); // Create a temporary URL for image preview
+      setFormData((prevState) => ({
+        ...prevState,
+        images: newImages,
+      }));
+    }
+  };
+
   // Fetch vehicle info using the API based on the registration number
   const fetchVehicleInfo = async () => {
     setLoading(true);
@@ -392,6 +404,32 @@ const AddNewVehicle = () => {
               />
             </div>
 
+            <div>
+              <h3 className="font-medium mb-2">Add Images</h3>
+              <div className="grid grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="border rounded-lg p-3">
+                    {formData.images[index] ? (
+                      <img
+                        src={formData.images[index]}
+                        alt={`Vehicle Image ${index + 1}`}
+                        className="h-32 w-full object-cover"
+                      />
+                    ) : (
+                      <label className="cursor-pointer">
+                        <span className="block text-blue-500 text-center">Add Image +</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleImageUpload(e, index)}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
 
 
             {/* Add other vehicle fields similar to the car name */}
