@@ -39,8 +39,9 @@ const Feedback = () => {
           }
           setLoading(false);
         } else {
+          // If no user is authenticated, keep the fields editable
+          setIsEditable(true);
           setLoading(false);
-          navigate('/');  // Redirect to homepage if no user is found
         }
       });
     };
