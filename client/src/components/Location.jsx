@@ -53,7 +53,7 @@ const LocationMenu = () => {
       {/* Button to open the dropdown */}
       <button
         type="button"
-        className="e1 text-black border-b-2 hover:border-b-black hover:cursor-pointerr"
+        className="e1 text-white font-semi border-b-2 hover:border-b-black hover:cursor-pointerr"
         onClick={() => setShowDropdown(!showDropdown)} // Toggle dropdown visibility
       >
         {selectedLocation ? `${selectedLocation} 📍` : 'Location🌐'} {/* Display selected location with 📍 */}
