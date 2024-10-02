@@ -35,8 +35,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-gray-800 p-4 flex justify-between items-center">
-      {/* Logo or Website Name on the left */}
-      <div className="text-white text-2xl font-bold cursor-pointer" onClick={() => navigate('/dealershipDashboard')}>
+      <div className="text-white text-2xl font-bold" onClick={()=>navigate('/dealershipDashboard')}>
         websiteName
       </div>
 

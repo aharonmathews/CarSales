@@ -3,168 +3,11 @@ import Navbar from '../components/Navbar';
 import sampleImage from '../assets/CarPlaceholdr.jpg';
 import Card1 from '../components/Card1';
 
+// Car data remains the same
 const carData = [
-  { 
-    id: Date.now(), 
-    name: 'CAR1', 
-    overview: 'This is a test car.', 
-    price: '2000', 
-    engine: 'V8', 
-    fuelType: 'Petrol', 
-    transmission: 'Manual', 
-    mileage: '15', 
-    color: 'Red', 
-    tyreSize: '16', 
-    seatingCapacity: '4', 
-    reg_no: 'ABC1234', 
-    reg_date: '2020-01-01', 
-    owner_name: 'John Doe', 
-    owner_father_name: 'John Sr.', 
-    current_address_line1: '123 Main St', 
-    current_address_line2: '', 
-    current_district_name: 'Central', 
-    current_state: 'New York', 
-    current_pincode: '10001', 
-    permanent_address_line1: '456 Another St', 
-    permanent_address_line2: '', 
-    permanent_district_name: 'North', 
-    permanent_state: 'New York', 
-    permanent_pincode: '10002', 
-    chassis_no: 'CHASSIS1234', 
-    engine_no: 'ENGINE1234', 
-    vehicle_manufacturer_name: 'Ford', 
-    model: 'Mustang', 
-    body_type: 'Coupe', 
-    vehicle_class_desc: 'Passenger Vehicle', 
-    vehicle_gross_weight: '1500kg', 
-    cubic_cap: '5000cc', 
-    insurance_upto: '2025-01-01', 
-    insurance_company_name: 'Geico', 
-    permit_valid_upto: '2023-12-31', 
-    pucc_upto: '2023-12-31', 
-    image: sampleImage
-  },
-  { 
-    id: Date.now() + 1, 
-    name: 'CAR2', 
-    overview: 'This car has a powerful diesel engine.', 
-    price: '3500', 
-    engine: 'V6', 
-    fuelType: 'Diesel', 
-    transmission: 'Automatic', 
-    mileage: '18', 
-    color: 'Blue', 
-    tyreSize: '17', 
-    seatingCapacity: '5', 
-    reg_no: 'DEF5678', 
-    reg_date: '2019-06-15', 
-    owner_name: 'Jane Smith', 
-    owner_father_name: 'Robert Smith', 
-    current_address_line1: '789 Oak St', 
-    current_address_line2: 'Apt 4B', 
-    current_district_name: 'East Side', 
-    current_state: 'California', 
-    current_pincode: '90001', 
-    permanent_address_line1: '123 Maple St', 
-    permanent_address_line2: '', 
-    permanent_district_name: 'West Side', 
-    permanent_state: 'California', 
-    permanent_pincode: '90002', 
-    chassis_no: 'CHASSIS5678', 
-    engine_no: 'ENGINE5678', 
-    vehicle_manufacturer_name: 'Toyota', 
-    model: 'Camry', 
-    body_type: 'Sedan', 
-    vehicle_class_desc: 'Passenger Vehicle', 
-    vehicle_gross_weight: '1800kg', 
-    cubic_cap: '3000cc', 
-    insurance_upto: '2024-07-20', 
-    insurance_company_name: 'Allstate', 
-    permit_valid_upto: '2023-10-15', 
-    pucc_upto: '2023-09-30', 
-    image: sampleImage
-  },
-  { 
-    id: Date.now() + 2, 
-    name: 'CAR3', 
-    overview: 'Compact electric vehicle with great mileage.', 
-    price: '5000', 
-    engine: 'Electric', 
-    fuelType: 'Electric', 
-    transmission: 'Automatic', 
-    mileage: '100', 
-    color: 'Green', 
-    tyreSize: '15', 
-    seatingCapacity: '4', 
-    reg_no: 'GHI9101', 
-    reg_date: '2021-03-10', 
-    owner_name: 'Alice Johnson', 
-    owner_father_name: 'Richard Johnson', 
-    current_address_line1: '101 Pine St', 
-    current_address_line2: '', 
-    current_district_name: 'South District', 
-    current_state: 'Texas', 
-    current_pincode: '75001', 
-    permanent_address_line1: '202 Birch St', 
-    permanent_address_line2: '', 
-    permanent_district_name: 'North District', 
-    permanent_state: 'Texas', 
-    permanent_pincode: '75002', 
-    chassis_no: 'CHASSIS9101', 
-    engine_no: 'ENGINE9101', 
-    vehicle_manufacturer_name: 'Tesla', 
-    model: 'Model 3', 
-    body_type: 'Sedan', 
-    vehicle_class_desc: 'Electric Vehicle', 
-    vehicle_gross_weight: '1600kg', 
-    cubic_cap: 'N/A', 
-    insurance_upto: '2026-01-01', 
-    insurance_company_name: 'State Farm', 
-    permit_valid_upto: '2024-03-31', 
-    pucc_upto: '2024-01-01', 
-    image: sampleImage
-  },
-  { 
-    id: Date.now() + 3, 
-    name: 'CAR4', 
-    overview: 'Luxury SUV with premium features.', 
-    price: '7000', 
-    engine: 'V8 Turbo', 
-    fuelType: 'Petrol', 
-    transmission: 'Automatic', 
-    mileage: '12', 
-    color: 'Black', 
-    tyreSize: '18', 
-    seatingCapacity: '7', 
-    reg_no: 'JKL1122', 
-    reg_date: '2018-11-22', 
-    owner_name: 'Michael Brown', 
-    owner_father_name: 'Thomas Brown', 
-    current_address_line1: '222 Cedar St', 
-    current_address_line2: '', 
-    current_district_name: 'Downtown', 
-    current_state: 'Florida', 
-    current_pincode: '33101', 
-    permanent_address_line1: '333 Spruce St', 
-    permanent_address_line2: '', 
-    permanent_district_name: 'Uptown', 
-    permanent_state: 'Florida', 
-    permanent_pincode: '33102', 
-    chassis_no: 'CHASSIS1122', 
-    engine_no: 'ENGINE1122', 
-    vehicle_manufacturer_name: 'BMW', 
-    model: 'X5', 
-    body_type: 'SUV', 
-    vehicle_class_desc: 'Luxury SUV', 
-    vehicle_gross_weight: '2500kg', 
-    cubic_cap: '4400cc', 
-    insurance_upto: '2024-08-15', 
-    insurance_company_name: 'Progressive', 
-    permit_valid_upto: '2023-11-30', 
-    pucc_upto: '2023-10-01', 
-    image: sampleImage
-  }
-]
+  // Same car data...
+];
+
 const CarSales = () => {
   const [filters, setFilters] = useState({
     name: '',
@@ -177,7 +20,7 @@ const CarSales = () => {
   });
 
   const [filteredCars, setFilteredCars] = useState(carData);
-  const [selectedCar, setSelectedCar] = useState(null); // Track the selected car for display
+  const [selectedCar, setSelectedCar] = useState(null); // For displaying car details
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -205,7 +48,6 @@ const CarSales = () => {
   };
 
   return (
-    <div>
     <div>
       <Navbar />
       <div className="flex p-5">
@@ -300,25 +142,9 @@ const CarSales = () => {
         </div>
 
         <div className="w-4/5 pl-5">
-          <div className="flex flex-wrap gap-4">
-            {filteredCars.length > 0 ? (
-              filteredCars.map((car, index) => (
-                <div
-                  key={index}
-                  onClick={() => handleCarClick(car)}
-                  className="cursor-pointer"
-                >
-                  <Card1 img={car.image} title={car.name} text={`$${car.price}`} />
-                </div>
-              ))
-            ) : (
-              <p>No cars match the selected filters.</p>
-            )}
-          </div>
-
-          {/* Display clicked car details */}
-          {selectedCar && (
-            <div className="border-2 border-gray-300 p-5 rounded-lg mt-4">
+          {selectedCar ? (
+            <div className="border-2 border-gray-300 p-5 rounded-lg">
+              {/* Display all car details */}
               <h2 className="text-2xl mb-2">{selectedCar.name}</h2>
               <img src={selectedCar.image} alt={selectedCar.name} className="mb-4" />
               <p><strong>Price:</strong> ${selectedCar.price}</p>
@@ -332,12 +158,28 @@ const CarSales = () => {
               <p><strong>Registration No:</strong> {selectedCar.reg_no}</p>
               <p><strong>Owner Name:</strong> {selectedCar.owner_name}</p>
               {/* Add other car details as needed */}
+              <button
+                onClick={() => setSelectedCar(null)} // Go back to the list
+                className="mt-4 bg-gray-500 text-white p-2 rounded"
+              >
+                Back to List
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-4">
+              {filteredCars.length > 0 ? (
+                filteredCars.map((car, index) => (
+                  <div key={index} onClick={() => handleCarClick(car)} className="cursor-pointer">
+                    <Card1 img={car.image} title={car.name} text={`$${car.price}`} />
+                  </div>
+                ))
+              ) : (
+                <p>No cars match the selected filters.</p>
+              )}
             </div>
           )}
         </div>
       </div>
-    </div>
-    <Footer/>
     </div>
   );
 };

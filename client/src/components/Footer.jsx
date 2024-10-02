@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white p-6 mt-10">
-      <div className="container mx-auto flex justify-between items-center">
+    <footer className="bg-gray-800 text-white p-6 mt-10 ">
+      <div className=" mx-auto flex justify-between items-center">
         <p className="text-sm">© 2024 Car Dealership. All rights reserved.</p>
         <Link to="/Feedback" className="text-sm hover:underline">
           Give Feedback

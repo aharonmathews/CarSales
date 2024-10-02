@@ -15,9 +15,6 @@ import Feedback from "./user/Feedback";
 import Feedbacks from "./dealership/Feedbacks";
 import Chats from "./dealership/Chats";
 import UserEmails from "./dealership/UserEmails";
-
-
-
 function App() {
 
   return (
@@ -38,6 +35,7 @@ function App() {
         {/* For dealership */}
         <Route path="/UserEmails" element={<UserEmails />} />
         <Route path="/Feedbacks" element={<Feedbacks />} />
+        <Route path="/vehicle/:id" element={<DealershipCarDetails />} /> {/* Corrected route */}
         <Route path="/Chats" element={<Chats />} />
         <Route path="/dealershipLogin" element={<DealershipSignIn /> } />
         <Route path="/garageManagement/*" element={<GarageManagement/>} />  {/* Add the wildcard here */}

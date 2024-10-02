@@ -7,7 +7,7 @@ const Card1 = ({ img, title, text }) => {
 
   const handleCardClick = () => {
     // Navigate to the CarDetails page, passing the car data via state
-    navigate(`/car-details`, { state: { img, title, text } });
+    navigate(`/carDetails`, { state: { img, title, text } });
   };
 
   return (
@@ -21,6 +21,7 @@ const Card1 = ({ img, title, text }) => {
         src={img}
         alt={`Image of ${title}`}
         className="rounded-t-xl shadow-lg object-cover w-full h-48"
+        draggable="false"
       />
       <div className="p-4">
         <h1 className="font-semibold text-2xl">{title}</h1>

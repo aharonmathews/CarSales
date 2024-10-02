@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import AddNewVehicle from './AddNewVehicle';
-import VehicleDetails from './VehicleDetails';
+import CarDetails from './CarDetails'; // Import CarDetails
 import { fetchVehiclesFromFirestore, addVehicleToFirestore } from '../firestoreService'; // Firestore functions
 import Navbar from './Navbar';
 
@@ -69,14 +69,7 @@ function GarageManagement() {
           />
           <Route
             path="/vehicle/:id"
-            element={
-              <VehicleDetails
-                vehicles={vehicles}
-                hideVehicle={hideVehicle}
-                addHiddenVehicleBack={addHiddenVehicleBack}
-                editVehicle={editVehicle}
-              />
-            }
+            element={<CarDetails />} // Replace VehicleDetails with CarDetails
           />
         </Routes>
       </div>
@@ -136,7 +129,7 @@ const InventoryList = ({ vehicles, hiddenVehicles }) => {
   );
 };
 
-// Styles
+// Styles (unchanged from your original code)
 const styles = {
   nav: {
     display: 'flex',
