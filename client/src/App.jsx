@@ -18,8 +18,6 @@ import Chats from "./dealership/Chats";
 import UserEmails from "./dealership/UserEmails";
 import loadingGif from './assets/Loadingcar.gif'; // Ensure you have a loading GIF in your assets folder
 
-import DealershipCarDetails from "./dealership/CarDetails"; // Corrected import
-
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -38,10 +36,12 @@ function App() {
     );
   }
 
+
   return (
     <Router>
       <Routes>
         {/* For normal user */}
+        
         <Route path="/" element={<UserHome />} />
         <Route path="/signIn" element={<SignIn />} />
         <Route path="/search" element={<SearchResults />} />
