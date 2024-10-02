@@ -81,11 +81,10 @@ const Wishlist = () => {
       <p className="mb-4">You have {wishlistItems.length} saved items</p>
       </div>
 
-          <button
-          className="bg-black text-white px-4 py-2 rounded-md"
-          onClick={navigate("/CompareCars")}>
-          Compare
-        </button>
+          
+      <button
+      className="bg-black text-white px-4 py-2 rounded-md"onClick={() => navigate("/CompareCars")} >Compare
+      </button>
         </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
