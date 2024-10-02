@@ -16,7 +16,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-800 text-white p-6">
+    <footer className="bg-gray-800 text-white p-6 bottom-0 fixed w-full">
       <div className="container mx-auto flex justify-between items-center">
         <p className="text-sm">© 2024 Car Dealership. All rights reserved.</p>
         <button

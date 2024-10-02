@@ -8,7 +8,6 @@ import { getFirestore, collection, query, where, getDocs } from "firebase/firest
 
 const AddNewVehicle = () => {
   const [formData, setFormData] = useState({
-    id: Date.now(),
     name: "",
     trackerid: "", // Updated to store trackerid
     overview: "",
@@ -80,6 +79,18 @@ const AddNewVehicle = () => {
       ...prevState,
       [name]: value,
     }));
+  };
+
+  const handleImageUpload = (e, index) => {
+    const file = e.target.files[0];
+    if (file) {
+      const newImages = [...formData.images];
+      newImages[index] = URL.createObjectURL(file); // Create a temporary URL for image preview
+      setFormData((prevState) => ({
+        ...prevState,
+        images: newImages,
+      }));
+    }
   };
 
   // Fetch vehicle info using the API based on the registration number
@@ -200,7 +211,7 @@ const handleSubmit = (e) => {
         </div>
 
         {/* Vehicle Information Form */}
-        {!loading && formData.reg_no && (
+        {(
           <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-3xl bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-semibold mb-4">Add New Vehicle</h2>
 
@@ -226,7 +237,6 @@ const handleSubmit = (e) => {
                 className="p-3 w-full border rounded-lg"
               />
             </div>
-
             <div>
               <label className="block font-medium">Engine</label>
               <input
@@ -425,6 +435,32 @@ const handleSubmit = (e) => {
               />
             </div>
 
+            <div>
+              <h3 className="font-medium mb-2">Add Images</h3>
+              <div className="grid grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="border rounded-lg p-3">
+                    {formData.images[index] ? (
+                      <img
+                        src={formData.images[index]}
+                        alt={`Vehicle Image ${index + 1}`}
+                        className="h-32 w-full object-cover"
+                      />
+                    ) : (
+                      <label className="cursor-pointer">
+                        <span className="block text-blue-500 text-center">Add Image +</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleImageUpload(e, index)}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
             <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
               Preview Details
             </button>

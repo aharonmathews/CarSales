@@ -1,220 +1,185 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
+import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import sampleImage from '../assets/CarPlaceholdr.jpg';
 import Card1 from '../components/Card1';
 
+// Car data remains the same
 const carData = [
-  { id: 1, image: sampleImage, name: 'CAR1', price: 2000 },
-  { id: 2, image: sampleImage, name: 'CAR2', price: 3000 },
-  { id: 3, image: sampleImage, name: 'CAR3', price: 4000 },
-  { id: 4, image: sampleImage, name: 'CAR4', price: 5000 },
-  { id: 5, image: sampleImage, name: 'CAR5', price: 6000 },
-  { id: 6, image: sampleImage, name: 'CAR6', price: 7000 },
+  // Same car data...
 ];
 
 const CarSales = () => {
-  const [filters, setFilters] = useState(['Maruthi', 'Power steering', 'Rear cam']);
-  const [budget, setBudget] = useState([10000, 2000000]);
-  const [newFilter, setNewFilter] = useState('');
-  const [mainFilters, setMainFilters] = useState(['New', 'Price Ascending', 'Price Descending', 'Rating']);
-  const [search, setSearch] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('New');
-  const [checkboxes, setCheckboxes] = useState({
-    basicDetails: {
-      'insurance': true,
-      'no accident': true,
-    },
-    owners: {
-      '1st': true,
-      '2nd': true,
-      '3rd': true,
-    },
-    fuel: {
-      Petrol: true,
-      Diesel: true,
-      CNG: true,
-    },
+  const [filters, setFilters] = useState({
+    name: '',
+    minPrice: '',
+    maxPrice: '',
+    engine: '',
+    fuelType: '',
+    reg_no: '',
+    owner_name: '',
   });
+
   const [filteredCars, setFilteredCars] = useState(carData);
+  const [selectedCar, setSelectedCar] = useState(null); // For displaying car details
 
-  const location = useLocation();
-  const navigate = useNavigate();
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters({ ...filters, [name]: value });
+  };
 
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const searchTerm = queryParams.get('query') || '';
+  const applyFilters = () => {
+    const filtered = carData.filter(car => {
+      const matchesName = filters.name ? car.name.toLowerCase().includes(filters.name.toLowerCase()) : true;
+      const matchesMinPrice = filters.minPrice ? Number(car.price) >= Number(filters.minPrice) : true;
+      const matchesMaxPrice = filters.maxPrice ? Number(car.price) <= Number(filters.maxPrice) : true;
+      const matchesEngine = filters.engine ? car.engine === filters.engine : true;
+      const matchesFuelType = filters.fuelType ? car.fuelType === filters.fuelType : true;
+      const matchesRegNo = filters.reg_no ? car.reg_no.toLowerCase().includes(filters.reg_no.toLowerCase()) : true;
+      const matchesOwnerName = filters.owner_name ? car.owner_name.toLowerCase().includes(filters.owner_name.toLowerCase()) : true;
 
-    const filtered = carData.filter(car =>
-      car.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+      return matchesName && matchesMinPrice && matchesMaxPrice && matchesEngine && matchesFuelType && matchesRegNo && matchesOwnerName;
+    });
 
     setFilteredCars(filtered);
-  }, [location.search]);
-
-  const handleSliderChange = value => {
-    setBudget(value);
   };
 
-
-  const handleAddFilter = (e) => {
-    e.preventDefault();
-    if (newFilter.trim()) {
-      setFilters([...filters, newFilter.trim()]);
-      setNewFilter('');
-    }
-  };
-
-  const handleFilterClick = (filter) => {
-    setSelectedFilter(filter);
-  }
-
-  const handleRemoveFilter = filter => {
-    setFilters(filters.filter(f => f !== filter));
-  };
-
-  const handleCheckboxChange = (group, checkbox) => {
-    setCheckboxes({
-      ...checkboxes,
-      [group]: {
-        ...checkboxes[group],
-        [checkbox]: !checkboxes[group][checkbox],
-      },
-    });
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    navigate(`/search?query=${search}`);
+  const handleCarClick = (car) => {
+    setSelectedCar(car); // Set the clicked car to show its details
   };
 
   return (
     <div>
-    <div>
       <Navbar />
       <div className="flex p-5">
         <div className="w-1/5 pr-5 flex flex-col m-1 border-2 border-[#bcbcbc] rounded-md p-4">
-          <div>
-            {filters.map((filter, index) => (
-              
-              <div key={index} className=' m-2 bg-gray-200 rounded px-1 flex-row flex w-fit'>
-                <span className="">
-                  {filter}
-                </span>
-              <div onClick={() => handleRemoveFilter(filter)} className='text-md  hover:cursor-pointer text-start ml-2'>&times;</div>
-              </div>
-            ))}
-          </div>
-          <form  onSubmit={handleAddFilter} className='flex my-4'>
+          {/* Filter inputs */}
+          <div className="mb-4">
             <input
               type="text"
-              value={newFilter}
-              onChange={e => setNewFilter(e.target.value)}
-              placeholder="Type filters"
-              className="p-2 border border-gray-300 rounded"
+              name="name"
+              placeholder="Name"
+              value={filters.name}
+              onChange={handleFilterChange}
+              className="border-2 p-2 rounded-md w-full mb-2"
             />
-            <button
-              onClick={handleAddFilter}
-              className="ml-2 bg-black text-white rounded"
-            >
-              Add Filter
+
+            {/* Price range filter */}
+            <div className="flex justify-between mb-2">
+              <input
+                type="number"
+                name="minPrice"
+                placeholder="Min Price"
+                value={filters.minPrice}
+                onChange={handleFilterChange}
+                className="border-2 p-2 rounded-md w-1/2 mr-2"
+              />
+              <input
+                type="number"
+                name="maxPrice"
+                placeholder="Max Price"
+                value={filters.maxPrice}
+                onChange={handleFilterChange}
+                className="border-2 p-2 rounded-md w-1/2"
+              />
+            </div>
+
+            {/* Engine Type Dropdown */}
+            <div className="mb-4">
+              <label className="block mb-1">Engine Type</label>
+              <select 
+                name="engine"
+                value={filters.engine}
+                onChange={handleFilterChange}
+                className="border-2 p-2 rounded-md w-full mb-2"
+              >
+                <option value="">All Engines</option>
+                <option value="V8">V8</option>
+                <option value="V6">V6</option>
+                <option value="Electric">Electric</option>
+                <option value="Hybrid">Hybrid</option>
+              </select>
+            </div>
+
+            {/* Fuel Type Dropdown */}
+            <div className="mb-4">
+              <label className="block mb-1">Fuel Type</label>
+              <select 
+                name="fuelType"
+                value={filters.fuelType}
+                onChange={handleFilterChange}
+                className="border-2 p-2 rounded-md w-full mb-2"
+              >
+                <option value="">All Fuel Types</option>
+                <option value="Petrol">Petrol</option>
+                <option value="Diesel">Diesel</option>
+                <option value="CNG">CNG</option>
+                <option value="Electric">Electric</option>
+              </select>
+            </div>
+
+            <input
+              type="text"
+              name="reg_no"
+              placeholder="Registration No."
+              value={filters.reg_no}
+              onChange={handleFilterChange}
+              className="border-2 p-2 rounded-md w-full mb-2"
+            />
+
+            <input
+              type="text"
+              name="owner_name"
+              placeholder="Owner Name"
+              value={filters.owner_name}
+              onChange={handleFilterChange}
+              className="border-2 p-2 rounded-md w-full mb-2"
+            />
+
+            <button onClick={applyFilters} className="bg-black text-white p-2 rounded mt-4">
+              Apply Filters
             </button>
-          </form>
-          
-          <div className="mb-4">
-            <p className='mb-1'>Basic Details</p>
-            {Object.keys(checkboxes.basicDetails).map(key => (
-              <label className="block mb-1" key={key}>
-                <input
-                  type="checkbox"
-                  checked={checkboxes.basicDetails[key]}
-                  onChange={() => handleCheckboxChange('basicDetails', key)}
-                  className="mr-1 accent-black h-3"
-                />{' '}
-                {key}
-              </label>
-            ))}
-          </div>
-          <div className="mb-4">
-            <p>Budget ₹{budget[0]} - ₹{budget[1]}</p>
-            <Slider
-              trackStyle={{ backgroundColor: '#000' }}
-              range
-              min={10000}
-              max={2000000}
-              value={budget}
-              onChange={handleSliderChange}
-              defaultValue={[10000, 2000000]}
-              handleStyle={{
-                borderColor: '#000',
-              }}
-            />
-          </div>
-          <div className="mb-4">
-            <p className='mb-1'>Owners</p>
-            {Object.keys(checkboxes.owners).map(key => (
-              <label className="block mb-1" key={key}>
-                <input
-                  type="checkbox"
-                  checked={checkboxes.owners[key]}
-                  onChange={() => handleCheckboxChange('owners', key)}
-                  className="mr-1 accent-black h-3"
-                />{' '}
-                {key}
-              </label>
-            ))}
-          </div>
-          <div className="mb-4">
-            <p className='mb-1'>Fuel</p>
-            {Object.keys(checkboxes.fuel).map(key => (
-              <label className="block mb-1" key={key}>
-                <input
-                  type="checkbox"
-                  checked={checkboxes.fuel[key]}
-                  onChange={() => handleCheckboxChange('fuel', key)}
-                  className="mr-1 accent-black h-3"
-                />{' '}
-                {key}
-              </label>
-            ))}
           </div>
         </div>
+
         <div className="w-4/5 pl-5">
-          <div className="flex flex-row justify-between">
-            <form onSubmit={handleSearch} className='w-2/3'>
-              <input
-                type="text"
-                placeholder="Search"
-                className="w-3/4 py-2 px-4 h-fit rounded-3xl border border-gray-300"
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </form>
-            
-            <div className="flex justify-start space-x-4 mb-4">
-              {mainFilters.map((filter, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleFilterClick(filter)}
-                  className={`p-2 h-fit rounded ${selectedFilter === filter ? 'bg-black text-white' : 'bg-gray-200 text-black'}`}
-                >
-                  {filter}
-                </button>
-              ))}
+          {selectedCar ? (
+            <div className="border-2 border-gray-300 p-5 rounded-lg">
+              {/* Display all car details */}
+              <h2 className="text-2xl mb-2">{selectedCar.name}</h2>
+              <img src={selectedCar.image} alt={selectedCar.name} className="mb-4" />
+              <p><strong>Price:</strong> ${selectedCar.price}</p>
+              <p><strong>Engine:</strong> {selectedCar.engine}</p>
+              <p><strong>Fuel Type:</strong> {selectedCar.fuelType}</p>
+              <p><strong>Transmission:</strong> {selectedCar.transmission}</p>
+              <p><strong>Mileage:</strong> {selectedCar.mileage} km/l</p>
+              <p><strong>Color:</strong> {selectedCar.color}</p>
+              <p><strong>Tyre Size:</strong> {selectedCar.tyreSize} inch</p>
+              <p><strong>Seating Capacity:</strong> {selectedCar.seatingCapacity}</p>
+              <p><strong>Registration No:</strong> {selectedCar.reg_no}</p>
+              <p><strong>Owner Name:</strong> {selectedCar.owner_name}</p>
+              {/* Add other car details as needed */}
+              <button
+                onClick={() => setSelectedCar(null)} // Go back to the list
+                className="mt-4 bg-gray-500 text-white p-2 rounded"
+              >
+                Back to List
+              </button>
             </div>
+          ) : (
+            <div className="flex flex-wrap gap-4">
+              {filteredCars.length > 0 ? (
+                filteredCars.map((car, index) => (
+                  <div key={index} onClick={() => handleCarClick(car)} className="cursor-pointer">
+                    <Card1 img={car.image} title={car.name} text={`$${car.price}`} />
+                  </div>
+                ))
+              ) : (
+                <p>No cars match the selected filters.</p>
+              )}
             </div>
-          <div className="flex flex-wrap gap-4">
-            {filteredCars.map((car, index) => (
-              <div key={index}>
-                <Card1 img={car.image} title={car.name} text={car.price} />
-              </div>
-            ))}
-          </div>
+          )}
         </div>
       </div>
-    </div>
-    <Footer/>
     </div>
   );
 };

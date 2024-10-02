@@ -17,7 +17,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-gray-800 p-4 flex justify-between items-center">
-      <div className="text-white text-2xl font-bold" onClick={()=>navigate('/dealershipDashboard')}>
+      <div className="text-white text-2xl font-bold cursor-pointer" onClick={()=>navigate('/dealershipDashboard')}>
         websiteName
       </div>
       <div className="flex space-x-4">

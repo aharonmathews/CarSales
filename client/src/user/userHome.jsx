@@ -72,7 +72,6 @@ const UserHome = () => {
   }
 
   if (error) return <div className="error-message">{error}</div>;
-  if (carsData.length === 0) return <div>No car data found.</div>;
 
   return (
     <>

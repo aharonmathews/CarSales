@@ -5,14 +5,16 @@ import React, { useState, useRef, useEffect } from "react";
 const CarDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { img, title, text } = location.state || {};
+  const { img, title, text, dealershipname } = location.state || {};
 
   const [selectedTab, setSelectedTab] = useState("Overview");
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const [showTooltip, setShowTooltip] = useState(false);
-  const [dealershipTitle, setDealershipTitle] = useState("Luxury Motors");
+  const [dealershipTitle, setDealershipTitle] = useState(dealershipname || "Luxury Motors");
   const [isHeartClicked, setIsHeartClicked] = useState(false);
+  const [dealershipRating, setDealershipRating] = useState(0);
+  const [dealershipReview, setDealershipReview] = useState("");
 
   const reviewSectionRef = useRef(null);
 
@@ -34,6 +36,18 @@ const CarDetails = () => {
     alert(`Review submitted: ${review}`);
   };
 
+  const handleDealershipHeartClick = (index) => {
+    setDealershipRating(index + 1);
+  };
+
+  const handleDealershipReviewChange = (event) => {
+    setDealershipReview(event.target.value);
+  };
+
+  const handleSubmitDealershipReview = () => {
+    alert(`Dealership review submitted: ${dealershipReview}`);
+  };
+
   const logProductView = (dealership) => {
     console.log(`Product viewed: ${dealership}`);
   };
@@ -45,11 +59,11 @@ const CarDetails = () => {
   };
 
   const handleSuggestedCarClick = (car) => {
-    navigate(`/car-details`, { state: { img: car.img, title: car.title, text: car.text } });
+    navigate(`/carDetails`, { state: { img: car.img, title: car.title, text: car.text } });
   };
 
   const handleMakeOfferClick = () => {
-    navigate("/make-an-offer", { state: { img, title, text } });
+    navigate("/makeAnOffer", { state: { img, title, text } });
   };
 
   const handleCompareClick = () => {
@@ -93,6 +107,7 @@ const CarDetails = () => {
                 src={img || "carPlaceholder.jpg"}
                 alt={title}
                 className="w-full h-auto rounded-lg shadow-lg"
+                draggable="false"
               />
             </div>
             <div className="w-full lg:w-1/2 p-4">
@@ -100,6 +115,7 @@ const CarDetails = () => {
                 <h2 className="text-3xl font-bold">{title || "Car"}</h2>
                 <p className="text-xl text-green-600">₹{text || "Price not available"}</p>
               </div>
+              <div className="text-lg font-medium text-gray-700">{dealershipname}</div>
               <div className="flex items-center my-4 text-sm text-gray-500">
                 <span className="font-medium">{dealershipTitle}</span>
                 <svg
@@ -220,6 +236,36 @@ const CarDetails = () => {
               onClick={handleSubmitReview}
             >
               Submit Review
+            </button>
+          </div>
+          <div className="mt-10">
+            <h3 className="text-2xl font-bold mb-4">Rate and Review Dealership</h3>
+            <div className="flex items-center mb-4">
+              {[...Array(5)].map((_, index) => (
+                <svg
+                  key={index}
+                  onClick={() => handleDealershipHeartClick(index)}
+                  className={`w-8 h-8 cursor-pointer ${index < dealershipRating ? "text-yellow-500" : "text-gray-300"}`}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M9.049 2.927C9.432 2.036 10.568 2.036 10.95 2.927l1.286 2.707a1 1 0 00.756.545l2.992.435c.969.141 1.356 1.332.654 2.012l-2.165 2.11a1 1 0 00-.287.885l.511 2.975c.168.98-.86 1.723-1.746 1.263l-2.67-1.403a1 1 0 00-.932 0l-2.67 1.403c-.886.46-1.914-.283-1.746-1.263l.51-2.975a1 1 0 00-.287-.885L2.35 8.626c-.702-.68-.315-1.87.654-2.012l2.992-.435a1 1 0 00.756-.545l1.286-2.707z" />
+                </svg>
+              ))}
+            </div>
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded-md"
+              rows="4"
+              value={dealershipReview}
+              onChange={handleDealershipReviewChange}
+              placeholder="Write your dealership review..."
+            />
+            <button
+              className="bg-black text-white px-4 py-2 mt-4 rounded-md"
+              onClick={handleSubmitDealershipReview}
+            >
+              Submit Dealership Review
             </button>
           </div>
           <div className="mt-6 flex justify-center">

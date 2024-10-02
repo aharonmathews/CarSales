@@ -18,6 +18,8 @@ import Chats from "./dealership/Chats";
 import UserEmails from "./dealership/UserEmails";
 import loadingGif from './assets/Loadingcar.gif'; // Ensure you have a loading GIF in your assets folder
 
+import DealershipCarDetails from "./dealership/CarDetails"; // Corrected import
+
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -53,6 +55,7 @@ function App() {
         {/* For dealership */}
         <Route path="/UserEmails" element={<UserEmails />} />
         <Route path="/Feedbacks" element={<Feedbacks />} />
+        <Route path="/vehicle/:id" element={<DealershipCarDetails />} /> {/* Corrected route */}
         <Route path="/Chats" element={<Chats />} />
         <Route path="/dealershipLogin" element={<DealershipSignIn />} />
         <Route path="/garageManagement/*" element={<GarageManagement />} />  {/* Add the wildcard here */}
