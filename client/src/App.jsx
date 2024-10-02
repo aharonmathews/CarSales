@@ -15,6 +15,7 @@ import Feedback from "./user/Feedback";
 import Feedbacks from "./dealership/Feedbacks";
 import Chats from "./dealership/Chats";
 import UserEmails from "./dealership/UserEmails";
+import DealershipCarDetails from "./dealership/CarDetails";
 function App() {
 
   return (
