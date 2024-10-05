@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { collection, addDoc, query, where, onSnapshot, getDocs, orderBy } from 'firebase/firestore';
+import { collection, addDoc, query, where, onSnapshot, getDocs, doc, orderBy, setDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase'; // Ensure you're importing auth from firebase
 import { onAuthStateChanged } from 'firebase/auth';
 import Navbar from '../components/Navbar'; // Import the Navbar component
 
-function Chat() {
+function Chats() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [users, setUsers] = useState([]);
@@ -38,47 +38,55 @@ function Chat() {
     fetchEmails();
   }, []);
 
-  // Fetch messages with the selected user
+  // Generate a chat ID based on the current user and the selected user
+  const getChatId = (user1, user2) => {
+    return [user1.email, user2.id].sort().join('_');
+  };
+
+  // Fetch messages with the selected user in real-time
   useEffect(() => {
     if (!selectedUser || !currentUser) return;
 
-    const q = query(
-      collection(db, 'userInfo', currentUser.email, 'messages'),
-      where('to', '==', selectedUser.id),
-      orderBy('timestamp', 'asc')
-    );
+    const chatId = getChatId(currentUser, selectedUser);
+    const messagesRef = collection(db, 'chats', chatId, 'messages');
+    const q = query(messagesRef, orderBy('timestamp', 'asc'));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const messages = [];
-      snapshot.forEach((doc) => {
-        messages.push(doc.data());
-      });
+      const messages = snapshot.docs.map((doc) => doc.data());
       setMessages(messages);
     }, (error) => {
-      console.error("Error listening to Firestore collection:", error);
+      console.error('Error listening to Firestore messages collection:', error);
     });
 
-    return unsubscribe;
+    return unsubscribe; // Cleanup subscription on unmount
   }, [selectedUser, currentUser]);
 
   const sendMessage = async () => {
     if (newMessage.trim() === '' || !selectedUser || !currentUser) return;
 
-    // Reference to the sender's messages collection
-    const senderMessagesRef = collection(db, 'userInfo', currentUser.email, 'messages');
-    // Create message object
+    const chatId = getChatId(currentUser, selectedUser);
+    const messagesRef = collection(db, 'chats', chatId, 'messages');
     const messageData = {
       from: currentUser.email,
       to: selectedUser.id,
       message: newMessage,
       timestamp: new Date(),
-      is_read: false, // Initially mark as unread
+      is_read: false, // Mark as unread initially
     };
 
-    // Add message to sender's collection
-    await addDoc(senderMessagesRef, messageData);
+    try {
+      // Create chat document if it doesn't exist
+      await setDoc(doc(db, 'chats', chatId), {
+        participants: [currentUser.email, selectedUser.id],
+      });
 
-    setNewMessage(''); // Clear the message input field
+      // Add message to the 'messages' subcollection
+      await addDoc(messagesRef, messageData);
+
+      setNewMessage(''); // Clear input field
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
   };
 
   // Handle user search
@@ -182,4 +190,4 @@ function Chat() {
   );
 }
 
-export default Chat;
+export default Chats;

@@ -11,14 +11,14 @@ import DealershipDashboard from './dealership/DealershipDashboard';
 import GarageManagement from './dealership/GarageManagement';
 import AddNewVehicle from './dealership/AddNewVehicle';
 import Profile from "./user/userProfile";
-import DealershipSignIn from "./dealership/dealerLogin";
+
 import Feedback from "./user/Feedback";
 import Feedbacks from "./dealership/Feedbacks";
 import Chats from "./dealership/Chats";
 import UserEmails from "./dealership/UserEmails";
 import DealershipCarDetails from "./dealership/CarDetails";
 import loadingGif from './assets/Loadingcar.gif'; // Ensure you have a loading GIF in your assets folder
-
+import DealershipSignIn from "./dealership/dealerLogin";
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -58,7 +58,7 @@ function App() {
         <Route path="/Feedbacks" element={<Feedbacks />} />
         <Route path="/vehicle/:id" element={<DealershipCarDetails />} /> {/* Corrected route */}
         <Route path="/Chats" element={<Chats />} />
-        <Route path="/dealershipLogin" element={<DealershipSignIn />} />
+        <Route path="/DealershipSignIn" element={<DealershipSignIn />} />
         <Route path="/garageManagement/*" element={<GarageManagement />} />  {/* Add the wildcard here */}
         <Route path="/addNewVehicle" element={<AddNewVehicle />} />   
         <Route path="/dealershipDashboard" element={<DealershipDashboard />} />
