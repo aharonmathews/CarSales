@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import React, { useState, useRef, useEffect } from "react";
 
+
 const CarDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom'; // Import useLocation to get car details
+import Footer from '../components/Footer';
 
 const MakeAnOffer = () => {
   const [offerPrice, setOfferPrice] = useState('');
