@@ -10,8 +10,8 @@ import MakeAnOffer from './user/MakeAnOffer';
 import Profile from "./user/userProfile";
 
 import Feedback from "./user/Feedback";
-import UserEmails from "./dealership/UserEmails";
 import loadingGif from './assets/Loadingcar.gif'; // Ensure you have a loading GIF in your assets folder
+import DealershipSignIn from "./dealership/dealerLogin";
 import DealerRoutes from "./dealership/DealerRoutes";
 
 function App() {
@@ -49,14 +49,8 @@ function App() {
         <Route path="/Feedback" element={<Feedback />} />
 
         {/* For dealership */}
-        <Route path="/UserEmails" element={<UserEmails />} />
-        <Route path="/Feedbacks" element={<Feedbacks />} />
-        <Route path="/vehicle/:id" element={<DealershipCarDetails />} /> {/* Corrected route */}
-        <Route path="/Chats" element={<Chats />} />
         <Route path="/dealershipLogin" element={<DealershipSignIn />} />
-        <Route path="/garageManagement/*" element={<GarageManagement />} />  {/* Add the wildcard here */}
-        <Route path="/addNewVehicle" element={<AddNewVehicle />} />   
-        <Route path="/dealershipDashboard" element={<DealershipDashboard />} />
+        <Route path="/dealership/*" element={<DealerRoutes />} />
       </Routes>
     </Router>
   );
