@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { collection, addDoc, query, where, onSnapshot, getDocs, orderBy } from 'firebase/firestore';
 import { db, auth } from '../firebase'; // Ensure you're importing auth from firebase
 import { onAuthStateChanged } from 'firebase/auth';
-import Navbar from '../components/Navbar'; // Import the Navbar component
+import Navbar from './Navbar';
 
 function Chat() {
   const [messages, setMessages] = useState([]);
