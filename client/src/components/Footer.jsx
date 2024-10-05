@@ -16,9 +16,9 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-800 text-white p-6 bottom-0 fixed w-full">
+    <footer className="bg-gray-800 text-white p-6 w-full flex flex-col md:flex-row items-center md:justify-between">
       <div className="container mx-auto flex justify-between items-center">
-        <p className="text-sm">© 2024 Car Dealership. All rights reserved.</p>
+        
         <button
           onClick={handleFeedbackClick}
           className="text-sm hover:underline cursor-pointer"
@@ -26,6 +26,7 @@ const Footer = () => {
           Give Feedback
         </button>
       </div>
+      <p className="text-sm">© 2024 Car Dealership. All rights reserved.</p>
     </footer>
   );
 };

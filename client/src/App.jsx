@@ -41,7 +41,7 @@ function App() {
         <Route path="/" element={<UserHome />} />
         <Route path="/signIn" element={<SignIn />} />
         <Route path="/search" element={<SearchResults />} />
-        <Route path="/carDetails/" element={<CarDetails />} /> 
+        <Route path="/carDetails/:id" element={<CarDetails />} /> 
         <Route path="/wishlist" element={<WishList />} />
         <Route path="/compareCars" element={<CompareCars />} />
         <Route path="/makeAnOffer" element={<MakeAnOffer />} />
