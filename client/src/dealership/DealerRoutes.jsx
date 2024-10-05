@@ -8,9 +8,10 @@ import DealershipProfile from './DealerProfile';
 import DealershipDashboard from './DealershipDashboard';
 import GarageManagement from './GarageManagement';
 import AddNewVehicle from './AddNewVehicle';
-import VehicleDetails from './VehicleDetails';
+import EditVehicleDetails from './VehicleDetails';
 import Chat from './Chats';
 import Feedbacks from './Feedbacks';
+import ViewVehicleDetails from './CarDetails';
 
 const DealerRoutes = () => {
   const [loading, setLoading] = useState(true);
@@ -61,9 +62,10 @@ const DealerRoutes = () => {
       <Route path="dashboard/*" element={<DealershipDashboard />} />
       <Route path="garageManagement/*" element={<GarageManagement />} />
       <Route path="addNewVehicle/*" element={<AddNewVehicle />} />
-      <Route path="manageVehicle/:carID" element={<VehicleDetails />} />
+      <Route path="manageVehicle/:carID" element={<EditVehicleDetails />} />
       <Route path="chats" element={<Chat />} />
       <Route path="feedbacks" element={<Feedbacks />} />
+      <Route path="carDetails/:carID" element={<ViewVehicleDetails />} />
     </Routes>
   );
 };

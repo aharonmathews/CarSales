@@ -39,7 +39,7 @@ function GarageManagement() {
   }, []);
 
   const handleCardClick = (carID) => {
-    navigate(`/dealership/manageVehicle/${carID}`);
+    navigate(`/dealership/carDetails/${carID}`);
   };
 
   return (
@@ -62,7 +62,7 @@ const InventoryList = ({ vehicles, hiddenVehicles, onCardClick }) => {
           <p>No cars available.</p>
         ) : (
           vehicles.map((vehicle) => (
-            <div key={vehicle.id} className="border border-gray-300 rounded-lg p-4 text-center transition-transform duration-300 ease-in-out hover:scale-105" onClick={()=> onCardClick(vehicle.carID)}>
+            <div key={vehicle.id} className="border border-gray-300 rounded-lg p-4 text-center transition-transform duration-300 ease-in-out hover:scale-105" onClick={()=> onCardClick(vehicle.id)}>
                 <img
                   src={vehicle.thumbnailImg}
                   alt="car"

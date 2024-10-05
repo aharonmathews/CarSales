@@ -1,118 +1,189 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../firebase'; // Assuming you have Firebase initialized
+import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Navbar from './Navbar';
 
 const CarDetails = () => {
   const { id: carID } = useParams(); // Get carID from URL params
   const [carData, setCarData] = useState(null);
+  const [carOverview, setCarOverview] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false); // To enable/disable edit mode
   const navigate = useNavigate();
+  const db = getFirestore();
+  const storage = getStorage();
 
-  // Fetch car details from Firestore
+  // Fetch both car details from 'carDetails' and car overview from 'cars'
   useEffect(() => {
     const fetchCarData = async () => {
-      const docRef = doc(db, 'vehicles', carID);
-      const carDoc = await getDoc(docRef);
-      if (carDoc.exists()) {
-        setCarData(carDoc.data());
+      try {
+        if (!carID) {
+          throw new Error('carID is undefined');
+        }
+
+        const carDetailsRef = doc(db, 'carDetails', carID);
+        const carOverviewRef = doc(db, 'carDetails', carID);
+
+        const carDetailsDoc = await getDoc(carDetailsRef);
+        const carOverviewDoc = await getDoc(carOverviewRef);
+
+        if (carDetailsDoc.exists()) {
+          setCarData(carDetailsDoc.data());
+        } else {
+          console.error('No carDetails document found!');
+        }
+
+        if (carOverviewDoc.exists()) {
+          setCarOverview(carOverviewDoc.data());
+        } else {
+          console.error('No cars document found!');
+        }
+      } catch (error) {
+        console.error('Error fetching car data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchCarData();
-  }, [carID]);
+  }, [carID, db]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCarData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageRef = ref(storage, `carDetails/${carID}/thumbnail_${file.name}`);
+      await uploadBytes(imageRef, file);
+      const imageUrl = await getDownloadURL(imageRef);
+      setCarData((prevData) => ({
+        ...prevData,
+        thumbnailImg: imageUrl,
+      }));
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      const carDetailsRef = doc(db, 'carDetails', carID);
+      const carsRef = doc(db, 'carDetails', carID);
+
+      await updateDoc(carDetailsRef, carData);
+      await updateDoc(carsRef, {
+        carName: carData.carName,
+        carPrice: carData.carPrice,
+        carFuel: carData.carFuel,
+        thumbnailImg: carData.thumbnailImg,
+        hidden: carData.hidden,
+      });
+
+      alert('Car details updated successfully!');
+      setIsEditing(false);
+      navigate('/dealership/dashboard');
+    } catch (error) {
+      console.error('Error updating car details:', error);
+      alert('Error updating car details. Please try again.');
+    }
+  };
 
   const handleHideCar = async () => {
-    const docRef = doc(db, 'vehicles', carID);
-    await updateDoc(docRef, { hidden: true });
-    setCarData((prevData) => ({ ...prevData, hidden: true }));
+    try {
+      const carsRef = doc(db, 'carsDetails', carID);
+      await updateDoc(carsRef, { hidden: true });
+      setCarOverview((prevOverview) => ({ ...prevOverview, hidden: true }));
+    } catch (error) {
+      console.error('Error hiding car:', error);
+    }
   };
 
   const handleUnhideCar = async () => {
-    const docRef = doc(db, 'vehicles', carID);
-    await updateDoc(docRef, { hidden: false });
-    setCarData((prevData) => ({ ...prevData, hidden: false }));
+    try {
+      const carsRef = doc(db, 'carDetails', carID);
+      await updateDoc(carsRef, { hidden: false });
+      setCarOverview((prevOverview) => ({ ...prevOverview, hidden: false }));
+    } catch (error) {
+      console.error('Error unhiding car:', error);
+    }
   };
 
-  const handleBoostCar = async () => {
-    const docRef = doc(db, 'vehicles', carID);
-    await updateDoc(docRef, { isboosting: true });
-    setCarData((prevData) => ({ ...prevData, isboosting: true }));
-  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  if (!carData) return <div>Loading...</div>;
+  if (!carData || !carOverview) {
+    return <div>No car data found</div>;
+  }
 
   return (
-    <div>
+    <div className="container mx-auto p-6">
       <Navbar />
-      <div className='mx-10 my-10'>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-4">
-            <h1 className='text-4xl font-extrabold '>{carData.name}</h1>
-            <img
-              className="rounded-xl shadow-xl w-10/12"
-              src={carData.images[0] || "https://imgd.aeplcdn.com/370x208/n/cw/ec/141867/nexon-exterior-right-front-three-quarter-71.jpeg?isig=0&q=80"}
-              alt={carData.name}
-              draggable="false"
-            />
-          </div>
-
-          <div className="flex flex-col space-y-4">
-            <div className="p-4 bg-blue-100 rounded-xl shadow-md">
-              <h2 className="text-xl font-bold">Price</h2>
-              <p className="text-lg">Rs. {carData.price}</p>
-            </div>
-            
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-4xl font-bold">Car Details</h2>
+        <div>
+          <button
+            className="border-2 rounded-lg text-white bg-yellow-500 hover:bg-yellow-700 p-2 mr-2"
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            {isEditing ? 'Cancel' : 'Edit'}
+          </button>
+          {carOverview.hidden ? (
             <button
-              onClick={() => navigate(`/addNewVehicle/${carID}`)} // Navigate to Edit Details page
-              className="w-full px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+              className="border-2 rounded-lg text-white bg-green-500 hover:bg-green-700 p-2"
+              onClick={handleUnhideCar}
             >
-              Edit Details
+              Unhide Car
             </button>
-
-            {!carData.hidden ? (
-              <button
-                onClick={handleHideCar}
-                className="w-full px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
-              >
-                Hide Car
-              </button>
-            ) : (
-              <button
-                onClick={handleUnhideCar}
-                className="w-full px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600"
-              >
-                Unhide Car
-              </button>
-            )}
-          </div>
+          ) : (
+            <button
+              className="border-2 rounded-lg text-white bg-red-500 hover:bg-red-700 p-2"
+              onClick={handleHideCar}
+            >
+              Hide Car
+            </button>
+          )}
         </div>
+      </div>
+      <div className="flex flex-col bg-white p-6 rounded-lg shadow-lg">
+        {/* Display fields like name, price, fuel type, etc */}
+        <label className="mb-2 font-semibold">Car Name</label>
+        <input
+          className="border-2 border-gray-300 mb-4 p-2 rounded-lg"
+          name="carName"
+          value={carData.carName || ''}
+          onChange={handleInputChange}
+          disabled={!isEditing}
+        />
+        {/* More fields can be added similarly */}
+        
+        <label className="mb-2 font-semibold">Thumbnail Image</label>
+        <input
+          className="border-2 border-gray-300 mb-4 p-2 rounded-lg"
+          type="file"
+          onChange={handleImageChange}
+          disabled={!isEditing}
+        />
+        {carData.thumbnailImg && (
+          <img
+            src={carData.thumbnailImg}
+            alt="Thumbnail"
+            className="w-24 h-24 object-cover mb-4"
+          />
+        )}
 
-        <div className="mt-10 p-4 bg-blue-100 rounded-xl shadow-md">
-          <h2 className="text-xl font-bold text-center">Boost your car!</h2>
-          <p className="text-center">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
-          </p>
-        </div>
-
-        {/* Dummy chart and details */}
-        <div className="mt-10">
-          <h2 className="text-center text-lg font-semibold mb-4">Clicks vs Impressions graph</h2>
-          {/* Add your chart component here */}
-          <div className="bg-gray-100 p-4 rounded-lg shadow-lg">
-            {/* Chart content (e.g., a chart library like Chart.js) */}
-            <p>Chart placeholder</p>
-          </div>
-        </div>
-
-        <div className="mt-6 text-center">
-          <p>
-            This car appeared in search results <span className="font-bold">{'<XX>'}</span> times in the past month.
-          </p>
-          <p>
-            <span className="font-bold">{'<XX>'}</span> people reviewed this car in the past month.
-          </p>
-        </div>
+        <button
+          className="border-2 rounded-lg text-white bg-blue-500 hover:bg-blue-700 p-4"
+          onClick={handleSave}
+          disabled={!isEditing}
+        >
+          Save
+        </button>
       </div>
     </div>
   );
