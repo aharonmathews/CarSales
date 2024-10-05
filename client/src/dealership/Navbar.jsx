@@ -1,23 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+
 
 const Navbar = () => {
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
-
-  // Track user authentication state
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
-    });
-    return () => unsubscribe(); // Cleanup the listener on unmount
-  }, []);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [username, setUsername] = useState('');
 
   const handleSignOut = async () => {
     const auth = getAuth();
@@ -29,49 +19,69 @@ const Navbar = () => {
     }
   };
 
-  const handleProfileClick = () => {
-    navigate('/profile'); // Redirect to profile page on profile button click
-  };
+  useEffect(() => {
+    const auth = getAuth();
+    const db = getFirestore();
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDoc = doc(db, 'dealershipsInfo', user.email);
+        const userSnapshot = await getDoc(userDoc);
+        if (userSnapshot.exists()) {
+          const data = userSnapshot.data();
+          setUsername(data.ownerName); // Assuming the username is stored in ownerName
+        }
+      }
+    });
+  }, []);
+  
 
   return (
     <nav className="bg-gray-800 p-4 flex justify-between items-center">
-      <div className="text-white text-2xl font-bold" onClick={()=>navigate('/dealershipDashboard')}>
+      <div className="text-white text-2xl font-bold cursor-pointer" onClick={() => navigate('/dealership/dashboard')}>
         websiteName
       </div>
-
-      {/* Centered links */}
-      <div className="flex space-x-4">
-        <Link to="/inventory" className="text-white hover:text-gray-400">Inventory</Link>
-        <Link to="/boost" className="text-white hover:text-gray-400">Boost</Link>
-        <Link to="/profile" className="text-white hover:text-gray-400">Profile</Link>
+      <div className="hidden md:flex space-x-4 ml-[6%]">
+        <Link to="/dealership/garageManagement" className="text-white hover:text-gray-400">Inventory</Link>
+        <Link to="/dealership/boost" className="text-white hover:text-gray-400">Boost</Link>
+        <Link to="/dealership/profile" className="text-white hover:text-gray-400">Profile</Link>
       </div>
-
-      {/* Right aligned user info and signout */}
-      <div className="flex items-center space-x-2">
-        {user ? (
-          <>
-            <button 
-              onClick={handleProfileClick} 
-              className='border-2 border-gray-500 bg-slate-200 px-3 py-1 rounded-lg hover:bg-slate-300'
-            >
-              {user.displayName || user.email} {/* Display user's name or email */}
-            </button>
-            <button 
-              onClick={handleSignOut} 
-              className="text-white bg-red-500 hover:bg-red-700 px-4 py-2 rounded"
-            >
-              Sign Out
-            </button>
-          </>
-        ) : (
+      <div className='flex flex-row items-center justify-between '>
+        <div className='text-white mr-5 py-2 px-3 rounded-md  border-1 border-black shadow-sm shadow-gray-400 bg-slate-500 hidden md:block'>
+          User : {username}
+        </div>
+        <button 
+          onClick={handleSignOut} 
+          className="hidden md:block text-white bg-red-500 hover:bg-red-700 px-4 py-2 rounded"
+        >
+          Sign Out
+        </button>
+      </div>
+      
+      <button 
+        className="md:hidden text-white" 
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"}></path>
+        </svg>
+      </button>
+      {isMenuOpen && (
+        <div className="md:hidden absolute top-16 left-0 right-0 bg-gray-800 flex flex-col items-center space-y-4 p-4">
+          <Link to="/dealership/garageManagement" className="text-white hover:text-gray-400" onClick={() => setIsMenuOpen(false)}>Inventory</Link>
+          <Link to="/dealership/boost" className="text-white hover:text-gray-400" onClick={() => setIsMenuOpen(false)}>Boost</Link>
+          <Link to="/dealership/profile" className="text-white hover:text-gray-400" onClick={() => setIsMenuOpen(false)}>Profile</Link>
+          <div className='text-white py-2 px-3 rounded-md  border-1 border-black shadow-sm shadow-gray-400 bg-slate-500'>
+          User : {username}
+        </div>
           <button 
-            onClick={() => navigate("/signIn")} 
-            className="text-white bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded"
+            onClick={() => { handleSignOut(); setIsMenuOpen(false); }} 
+            className="text-white bg-red-500 hover:bg-red-700 px-4 py-2 rounded"
           >
-            Sign In
+            Sign Out
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </nav>
   );
 };

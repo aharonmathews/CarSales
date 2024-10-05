@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
@@ -75,7 +75,7 @@ const UserHome = () => {
 
   return (
     <>
-    <div className="bg-[#efefff]">
+    <div className="bg-[#efefff] pb-10">
       <div className='hidden md:block'>
         <Help />
         <Navbar />
@@ -105,21 +105,19 @@ const UserHome = () => {
         {carsData.map(car => (
           <div key={car.id} className="car-card border p-4 rounded-lg shadow-lg">
             <img src={car.images?.[0] || plchldr} alt={car.name} className="car-image mb-2 w-full h-48 object-cover rounded" />
-            <h2 className="text-2xl font-semibold mt-2">{car.name}</h2>
-            <p><strong>ID:</strong> {car.id}</p>
-            <p><strong>Price:</strong> ₹{car.price}</p>
-            <p><strong>Trackerid:</strong>{car.trackerid}</p>
+            <h2 className="text-2xl font-semibold mt-2">{car.name || "name not available"}</h2>
+            <p><strong>Price:</strong> ₹{car.price || "price not available"}</p>
             <button
               className="mt-2 text-blue-600"
-              onClick={() => navigate(`/car-details/${car.id}`)} // Navigate to detailed view
+              onClick={() => navigate(`/carDetails/${car.id}`)} // Navigate to detailed view
             >
               View Details
             </button>
           </div>
         ))}
       </div>
-      <Footer />
       </div>
+      <Footer />
     </>
   );
 };

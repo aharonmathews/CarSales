@@ -1,415 +1,457 @@
-import React, { useState, useEffect } from "react";
-import { addVehicleToFirestore } from "../firestoreService";
-import { useNavigate } from "react-router-dom";
-import Navbar from "./Navbar";
-import axios from "axios";
-import { getAuth } from "firebase/auth";
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import { useState } from 'react';
+import { getFirestore, collection, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 const AddNewVehicle = () => {
-  const [formData, setFormData] = useState({
-    id: Date.now(),
-    name: "",
-    overview: "",
-    price: "",
-    engine: "",
-    fuelType: "",
-    transmission: "",
-    mileage: "",
-    color: "",
-    tyreSize: "",
-    seatingCapacity: "",
-    images: [],
-    reg_no: "", // Registration/plate number input
-    reg_date: "", // Vehicle registration date
-    owner_name: "", // Vehicle owner name
-    owner_father_name: "", // Owner's father name
-    current_address_line1: "", // Owner's current address line 1
-    current_address_line2: "", // Owner's current address line 2
-    current_district_name: "", // Owner's current district name
-    current_state: "", // Owner's current state
-    current_pincode: "", // Owner's current pincode
-    permanent_address_line1: "", // Owner's permanent address line 1
-    permanent_address_line2: "", // Owner's permanent address line 2
-    permanent_district_name: "", // Owner's permanent district
-    permanent_state: "", // Owner's permanent state
-    permanent_pincode: "", // Owner's permanent pincode
-    chassis_no: "", // Vehicle chassis number
-    engine_no: "", // Vehicle engine number
-    vehicle_manufacturer_name: "", // Vehicle manufacturer name
-    model: "", // Vehicle model
-    body_type: "", // Vehicle body type
-    vehicle_class_desc: "", // Vehicle class description
-    vehicle_gross_weight: "", // Vehicle gross weight
-    cubic_cap: "", // Vehicle cubic capacity
-    insurance_upto: "", // Insurance validity
-    insurance_company_name: "", // Insurance company name
-    permit_valid_upto: "", // Permit validity
-    pucc_upto: "", // PUCC validity
-  });
-
+  // State variables for car details
+  const [carVIN, setCarVIN] = useState('');
+  const [carName, setCarName] = useState('');
+  const [carCompany, setCarCompany] = useState('');
+  const [carPrice, setCarPrice] = useState('');
+  const [manufacturedYear, setManufacturedYear] = useState('');
+  const [carDesc, setCarDesc] = useState('');
+  const [carType, setCarType] = useState('');
+  const [carColor, setCarColor] = useState('');
+  const [carFuel, setCarFuel] = useState('');
+  const [ownersNum, setOwnersNum] = useState('');
+  const [carTransmission, setCarTransmission] = useState('');
+  const [engineCap, setEngineCap] = useState('');
+  const [seatCap, setSeatCap] = useState('');
+  const [carCondition, setCarCondition] = useState('');
+  const [location, setLocation] = useState('');
+  const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [imageNames, setImageNames] = useState([]);
+  const [thumbnailImage, setThumbnailImage] = useState(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState('');
+  const [additionalFeatures, setAdditionalFeatures] = useState([]);
+  const [featureInput, setFeatureInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [vehicleFound, setVehicleFound] = useState(false);
-  const [previewMode, setPreviewMode] = useState(false);
-  const [username, setUsername] = useState("");
-  const [vehicleCount, setVehicleCount] = useState(0);
   const navigate = useNavigate();
 
-  // Handle input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value || "", // Ensuring no null values, using empty string
-    }));
+  // Handler for selecting multiple images
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    const newImages = [...images, ...files];
+    setImages(newImages);
+
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setImagePreviews((prev) => [...prev, ...newPreviews]);
+
+    const newNames = files.map((file) => file.name);
+    setImageNames((prev) => [...prev, ...newNames]);
   };
 
-  const handleImageUpload = (e, index) => {
+  // Handler to remove a selected image
+  const handleRemoveImage = (index) => {
+    const newImages = images.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    const newNames = imageNames.filter((_, i) => i !== index);
+    setImages(newImages);
+    setImagePreviews(newPreviews);
+    setImageNames(newNames);
+  };
+
+  // Handler for selecting a thumbnail image
+  const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const newImages = [...formData.images];
-      newImages[index] = URL.createObjectURL(file); // Create a temporary URL for image preview
-      setFormData((prevState) => ({
-        ...prevState,
-        images: newImages,
-      }));
+      setThumbnailImage(file);
+      setThumbnailPreview(URL.createObjectURL(file));
     }
   };
 
-  const fetchVehicleInfo = async () => {
+  // Handler to add an additional feature
+  const handleAddFeature = () => {
+    if (featureInput.trim()) {
+      setAdditionalFeatures((prev) => [...prev, featureInput.trim()]);
+      setFeatureInput('');
+    }
+  };
+
+  // Handler to remove an additional feature
+  const handleRemoveFeature = (index) => {
+    const newFeatures = additionalFeatures.filter((_, i) => i !== index);
+    setAdditionalFeatures(newFeatures);
+  };
+
+  // Handler for form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
-    setError(null);
-    setVehicleFound(false); // Reset vehicle found status before the API call
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const dealerID = user ? user.uid : null;
+
+    if (!dealerID) {
+      alert('User not authenticated');
+      setLoading(false);
+      return;
+    }
+
+    const db = getFirestore();
+    const storage = getStorage();
+
     try {
-      const options = {
-        method: "POST",
-        url: "https://rto-vehicle-information-verification-india.p.rapidapi.com/api/v1/rc/vehicleinfo",
-        headers: {
-          "Content-Type": "application/json",
-          "x-rapidapi-host":
-            "rto-vehicle-information-verification-india.p.rapidapi.com",
-          "x-rapidapi-key": "9ecdfee856msh15ac3884659cc13p1cdfb6jsn23ddb3f38179", // Replace with your actual API key
-        },
-        data: {
-          reg_no: formData.reg_no,
-          consent: "Y",
-          consent_text: "I hereby declare my consent agreement for fetching my information via AITAN Labs API",
-        },
+      // Generate a unique document reference
+      const carDetailsRef = doc(collection(db, 'carDetails'));
+      const carDetailsId = carDetailsRef.id;
+
+      // Prepare car data including carNameLower for case-insensitive search
+      const carData = {
+        carVIN,
+        carName,
+        carNameLower: carName.toLowerCase(), // Added field
+        carCompany,
+        carPrice: parseFloat(carPrice), // Ensure numeric value
+        manufacturedYear: parseInt(manufacturedYear, 10), // Ensure integer
+        carDesc,
+        carType,
+        carColor,
+        carFuel,
+        ownersNum: parseInt(ownersNum, 10), // Ensure integer
+        carTransmission,
+        engineCap: parseFloat(engineCap), // Ensure numeric value
+        seatCap: parseInt(seatCap, 10), // Ensure integer
+        carCondition,
+        location,
+        additionalFeatures,
+        dealerID,
+        priority: 0, // Default priority
+        hidden: false,
       };
 
-      const response = await axios.request(options);
-      const vehicleData = response.data.result;
+      // Add initial car details to Firestore
+      await setDoc(carDetailsRef, carData);
 
-      if (vehicleData) {
-        setFormData((prevState) => ({
-          ...prevState,
-          ...vehicleData,
-        }));
-        setVehicleFound(true); // Vehicle found
-      } else {
-        setError("No vehicle found");
-        setVehicleFound(false); // No vehicle found
+      // Function to upload a single image and return its URL
+      const uploadImage = async (image, isThumbnail = false) => {
+        // Generate a unique image name to prevent overwriting
+        const timestamp = Date.now();
+        const uniqueName = `${isThumbnail ? 'thumbnail_' : ''}${timestamp}_${image.name}`;
+        const imageRef = ref(storage, `cars/${carDetailsId}/${uniqueName}`);
+        await uploadBytes(imageRef, image);
+        const url = await getDownloadURL(imageRef);
+        return url;
+      };
+
+      // Upload all images and get their URLs
+      const imageUrls = await Promise.all(
+        images.map((image) => uploadImage(image))
+      );
+
+      // Upload thumbnail image and get its URL
+      let thumbnailUrl = '';
+      if (thumbnailImage) {
+        thumbnailUrl = await uploadImage(thumbnailImage, true);
       }
-    } catch (error) {
-      setError("Failed to fetch vehicle info: " + error.message);
-      setVehicleFound(false);
-    } finally {
+
+      // Update car details with image URLs and thumbnail URL
+      await updateDoc(carDetailsRef, {
+        images: imageUrls,
+        thumbnailImg: thumbnailUrl,
+      });
+
       setLoading(false);
-    }
-  };
-
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setPreviewMode(true);
-  };
-
-  const handleFinalSave = async () => {
-    try {
-      await addVehicleToFirestore(formData);
-      alert("Vehicle details saved successfully!");
-      navigate("/DealershipDashboard");
+      alert('Car details added successfully!');
+      navigate('/dealership/dashboard');
     } catch (error) {
-      setError("Error saving vehicle details: " + error.message);
+      setLoading(false);
+      console.error('Error adding car details:', error);
+      alert('Error adding car details. Please try again.');
     }
   };
 
   return (
-    <>
-      <Navbar />
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-        {/* Plate Number Input */}
-        <div className="mb-8 text-center">
-          <h2 className="text-3xl font-semibold mb-4">Search Vehicle by Plate Number</h2>
-          <input
-            type="text"
-            name="reg_no"
-            placeholder="Enter Plate Number"
-            value={formData.reg_no}
-            onChange={handleChange}
-            className="p-3 w-full border rounded-lg"
-          />
-          <button
-            onClick={fetchVehicleInfo}
-            className="mt-4 px-6 py-3 bg-blue-500 text-white rounded-lg"
-          >
-            Search
-          </button>
-          {loading && <p>Loading vehicle info...</p>}
-          {error && <p className="text-red-500">{error}</p>}
+    <div className='flex flex-col justify-center items-center bg-gray-100 p-6'>
+      <h1 className='text-4xl font-bold mb-6'>Add New Vehicle</h1>
+      <form
+        className='flex flex-col bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl'
+        onSubmit={handleSubmit}
+      >
+        {/* Car VIN */}
+        <label className='mb-2 font-semibold'>Car VIN</label>
+        <input
+          type='text'
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={carVIN}
+          onChange={(e) => setCarVIN(e.target.value)}
+          required
+        />
+
+        {/* Car Name */}
+        <label className='mb-2 font-semibold'>Car Name</label>
+        <input
+          type='text'
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={carName}
+          onChange={(e) => setCarName(e.target.value)}
+          required
+        />
+
+        {/* Car Company */}
+        <label className='mb-2 font-semibold'>Car Company</label>
+        <input
+          type='text'
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={carCompany}
+          onChange={(e) => setCarCompany(e.target.value)}
+          required
+        />
+
+        {/* Car Price */}
+        <label className='mb-2 font-semibold'>Car Price (₹)</label>
+        <input
+          type='number'
+          min='0'
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={carPrice}
+          onChange={(e) => setCarPrice(e.target.value)}
+          required
+        />
+
+        {/* Manufactured Year */}
+        <label className='mb-2 font-semibold'>Manufactured Year</label>
+        <input
+          type='number'
+          min='1900'
+          max={new Date().getFullYear()}
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={manufacturedYear}
+          onChange={(e) => setManufacturedYear(e.target.value)}
+          required
+        />
+
+        {/* Car Description */}
+        <label className='mb-2 font-semibold'>Car Description</label>
+        <textarea
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={carDesc}
+          onChange={(e) => setCarDesc(e.target.value)}
+          required
+        />
+
+        {/* Car Model */}
+        <label className='mb-2 font-semibold'>Car Model</label>
+        <input
+          type='text'
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={carType}
+          onChange={(e) => setCarType(e.target.value)}
+          required
+        />
+
+        {/* Car Color */}
+        <label className='mb-2 font-semibold'>Car Color</label>
+        <input
+          type='text'
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={carColor}
+          onChange={(e) => setCarColor(e.target.value)}
+          required
+        />
+
+        {/* Car Fuel */}
+        <label className='mb-2 font-semibold'>Car Fuel</label>
+        <select
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={carFuel}
+          onChange={(e) => setCarFuel(e.target.value)}
+          required
+        >
+          <option value="">Select Fuel Type</option>
+          <option value="Petrol">Petrol</option>
+          <option value="Diesel">Diesel</option>
+          <option value="Petrol Hybrid">Petrol Hybrid</option>
+          <option value="Diesel Hybrid">Diesel Hybrid</option>
+          <option value="Electric">Electric</option>
+        </select>
+
+        {/* Number of Previous Owners */}
+        <label className='mb-2 font-semibold'>Number of Previous Owners</label>
+        <input
+          type='number'
+          min='0'
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={ownersNum}
+          onChange={(e) => setOwnersNum(e.target.value)}
+          required
+        />
+
+        {/* Car Transmission */}
+        <label className='mb-2 font-semibold'>Car Transmission</label>
+        <select
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={carTransmission}
+          onChange={(e) => setCarTransmission(e.target.value)}
+          required
+        >
+          <option value="">Select Transmission</option>
+          <option value="Manual">Manual</option>
+          <option value="AMT">AMT</option>
+          <option value="CVT">CVT</option>
+          <option value="Electric">Electric</option>
+        </select>
+
+        {/* Engine Capacity */}
+        <label className='mb-2 font-semibold'>Engine Capacity (cc)</label>
+        <input
+          type='number'
+          min='0'
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={engineCap}
+          onChange={(e) => setEngineCap(e.target.value)}
+          required
+        />
+
+        {/* Seating Capacity */}
+        <label className='mb-2 font-semibold'>Seating Capacity</label>
+        <input
+          type='number'
+          min='1'
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={seatCap}
+          onChange={(e) => setSeatCap(e.target.value)}
+          required
+        />
+
+        {/* Car Condition */}
+        <label className='mb-2 font-semibold'>Car Condition</label>
+        <select
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={carCondition}
+          onChange={(e) => setCarCondition(e.target.value)}
+          required
+        >
+          <option value="">Select Condition</option>
+          <option value="Poor">Poor</option>
+          <option value="Average">Average</option>
+          <option value="Good">Good</option>
+          <option value="Excellent">Excellent</option>
+        </select>
+
+        {/* Location */}
+        <label className='mb-2 font-semibold'>Location</label>
+        <input
+          type='text'
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          required
+        />
+
+        {/* Images */}
+        <label className='mb-2 font-semibold'>Images</label>
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          onChange={handleImageChange}
+        />
+        <div className='flex flex-wrap mb-4'>
+          {imagePreviews.map((src, index) => (
+            <div key={index} className='relative'>
+              <img src={src} alt={`Preview ${index}`} className='w-24 h-24 object-cover m-2 rounded-lg shadow-md' />
+              <button
+                type="button"
+                className='absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 transform translate-x-1/2 -translate-y-1/2'
+                onClick={() => handleRemoveImage(index)}
+              >
+                &times;
+              </button>
+            </div>
+          ))}
         </div>
-
-        {/* Vehicle Information Form */}
-        {!loading && formData.reg_no && (
-          <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-3xl bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold mb-4">Add New Vehicle</h2>
-
-            <div>
-              <label className="block font-medium">Car Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Overview</label>
-              <textarea
-                name="overview"
-                value={formData.overview}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Engine</label>
-              <input
-                type="text"
-                name="engine"
-                value={formData.engine}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Fuel Type</label>
-              <input
-                type="text"
-                name="fuelType"
-                value={formData.fuelType}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Mileage (km/l)</label>
-              <input
-                type="number"
-                name="mileage"
-                value={formData.mileage}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Color</label>
-              <input
-                type="text"
-                name="color"
-                value={formData.color}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Tyre Size</label>
-              <input
-                type="text"
-                name="tyreSize"
-                value={formData.tyreSize}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Seating Capacity</label>
-              <input
-                type="number"
-                name="seatingCapacity"
-                value={formData.seatingCapacity}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Chassis Number</label>
-              <input
-                type="text"
-                name="chassis_no"
-                value={formData.chassis_no}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Engine Number</label>
-              <input
-                type="text"
-                name="engine_no"
-                value={formData.engine_no}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Manufacturer</label>
-              <input
-                type="text"
-                name="vehicle_manufacturer_name"
-                value={formData.vehicle_manufacturer_name}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Model</label>
-              <input
-                type="text"
-                name="model"
-                value={formData.model}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Body Type</label>
-              <input
-                type="text"
-                name="body_type"
-                value={formData.body_type}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Vehicle Class Description</label>
-              <input
-                type="text"
-                name="vehicle_class_desc"
-                value={formData.vehicle_class_desc}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Vehicle Gross Weight (kg)</label>
-              <input
-                type="number"
-                name="vehicle_gross_weight"
-                value={formData.vehicle_gross_weight}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Cubic Capacity (cc)</label>
-              <input
-                type="number"
-                name="cubic_cap"
-                value={formData.cubic_cap}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Insurance Valid Until</label>
-              <input
-                type="date"
-                name="insurance_upto"
-                value={formData.insurance_upto}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Insurance Company Name</label>
-              <input
-                type="text"
-                name="insurance_company_name"
-                value={formData.insurance_company_name}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Permit Valid Until</label>
-              <input
-                type="date"
-                name="permit_valid_upto"
-                value={formData.permit_valid_upto}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">PUCC Valid Until</label>
-              <input
-                type="date"
-                name="pucc_upto"
-                value={formData.pucc_upto}
-                onChange={handleChange}
-                className="p-3 w-full border rounded-lg"
-              />
-            </div>
-
-
-
-            {/* Add other vehicle fields similar to the car name */}
-            {/* ... */}
-
-            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-              Preview Details
-            </button>
-          </form>
+        {imageNames.length > 0 && (
+          <ul className='mb-4'>
+            {imageNames.map((name, index) => (
+              <li key={index} className='flex justify-between items-center mb-2'>
+                {name}
+                <button
+                  type="button"
+                  className='ml-2 bg-red-500 text-white rounded-full px-2 py-1'
+                  onClick={() => handleRemoveImage(index)}
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
         )}
 
-        {/* Preview Mode */}
-        {previewMode && (
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Preview Vehicle Details</h2>
-            <pre>{JSON.stringify(formData, null, 2)}</pre>
-            <button onClick={handleFinalSave} className="bg-green-500 text-white px-4 py-2 rounded">
-              Save Vehicle
-            </button>
-            <button onClick={() => setPreviewMode(false)} className="bg-red-500 text-white px-4 py-2 rounded">
-              Edit
+        {/* Thumbnail Image */}
+        <label className='mb-2 font-semibold'>Thumbnail Image</label>
+        <input
+          type="file"
+          accept="image/*"
+          className='border-2 border-gray-300 mb-4 p-2 rounded-lg'
+          onChange={handleThumbnailChange}
+        />
+        {thumbnailPreview && (
+          <div className='relative mb-4'>
+            <img src={thumbnailPreview} alt="Thumbnail Preview" className='w-24 h-24 object-cover m-2 rounded-lg shadow-md' />
+            <button
+              type="button"
+              className='absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 transform translate-x-1/2 -translate-y-1/2'
+              onClick={() => {
+                setThumbnailImage(null);
+                setThumbnailPreview('');
+              }}
+            >
+              &times;
             </button>
           </div>
         )}
-      </div>
-    </>
+
+        {/* Additional Features */}
+        <label className='mb-2 font-semibold'>Additional Features</label>
+        <div className='flex mb-4'>
+          <input
+            type='text'
+            className='border-2 border-gray-300 p-2 rounded-lg flex-grow'
+            value={featureInput}
+            onChange={(e) => setFeatureInput(e.target.value)}
+            placeholder='Enter a feature'
+          />
+          <button
+            type="button"
+            className='ml-2 bg-green-500 text-white rounded-lg p-2 hover:bg-green-700'
+            onClick={handleAddFeature}
+          >
+            Add
+          </button>
+        </div>
+        {additionalFeatures.length > 0 && (
+          <ul className='mb-4'>
+            {additionalFeatures.map((feature, index) => (
+              <li key={index} className='flex justify-between items-center mb-2'>
+                {feature}
+                <button
+                  type="button"
+                  className='ml-2 bg-red-500 text-white rounded-lg p-2 hover:bg-red-700'
+                  onClick={() => handleRemoveFeature(index)}
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className='border-2 rounded-lg text-white bg-blue-500 hover:bg-blue-700 p-4 transition duration-300'
+          disabled={loading}
+        >
+          {loading ? 'Saving...' : 'Save'}
+        </button>
+      </form>
+    </div>
   );
 };
 

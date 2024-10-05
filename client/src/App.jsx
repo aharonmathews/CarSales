@@ -7,18 +7,13 @@ import WishList from "./user/wishList";
 import CarDetails from "./user/car-details"; 
 import CompareCars from './user/CompareCars';
 import MakeAnOffer from './user/MakeAnOffer';
-import DealershipDashboard from './dealership/DealershipDashboard';
-import GarageManagement from './dealership/GarageManagement';
-import AddNewVehicle from './dealership/AddNewVehicle';
 import Profile from "./user/userProfile";
 
 import Feedback from "./user/Feedback";
-import Feedbacks from "./dealership/Feedbacks";
-import Chats from "./dealership/Chats";
 import UserEmails from "./dealership/UserEmails";
-import DealershipCarDetails from "./dealership/CarDetails";
 import loadingGif from './assets/Loadingcar.gif'; // Ensure you have a loading GIF in your assets folder
-import DealershipSignIn from "./dealership/dealerLogin";
+import DealerRoutes from "./dealership/DealerRoutes";
+
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +41,7 @@ function App() {
         <Route path="/" element={<UserHome />} />
         <Route path="/signIn" element={<SignIn />} />
         <Route path="/search" element={<SearchResults />} />
-        <Route path="/carDetails/" element={<CarDetails />} /> 
+        <Route path="/carDetails/:id" element={<CarDetails />} /> 
         <Route path="/wishlist" element={<WishList />} />
         <Route path="/compareCars" element={<CompareCars />} />
         <Route path="/makeAnOffer" element={<MakeAnOffer />} />
@@ -58,7 +53,7 @@ function App() {
         <Route path="/Feedbacks" element={<Feedbacks />} />
         <Route path="/vehicle/:id" element={<DealershipCarDetails />} /> {/* Corrected route */}
         <Route path="/Chats" element={<Chats />} />
-        <Route path="/DealershipSignIn" element={<DealershipSignIn />} />
+        <Route path="/dealershipLogin" element={<DealershipSignIn />} />
         <Route path="/garageManagement/*" element={<GarageManagement />} />  {/* Add the wildcard here */}
         <Route path="/addNewVehicle" element={<AddNewVehicle />} />   
         <Route path="/dealershipDashboard" element={<DealershipDashboard />} />
