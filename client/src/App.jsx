@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import UserHome from "./user/userHome";
-import SearchResults from "./user/searchResults";
+import SearchResults from "./user/SearchResults";
 import SignIn from "./user/signUp";
 import WishList from "./user/wishList";
 import CarDetails from "./user/car-details"; 
@@ -17,10 +17,9 @@ import DealerRoutes from "./dealership/DealerRoutes";
 function App() {
   const [loading, setLoading] = useState(true);
 
-  // Simulate a loading delay (e.g., for fetching user data or initializing app)
   useEffect(() => {
     setTimeout(() => {
-      setLoading(false); // Set loading to false after 2 seconds (you can adjust this delay)
+      setLoading(false);
     }, 2000);
   }, []);
 
